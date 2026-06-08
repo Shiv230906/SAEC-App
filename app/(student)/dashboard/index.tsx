@@ -1,22 +1,31 @@
-import { View, Text } from "react-native";
-import Navbar from "../../../src/components/Navbar";
+import { View, Text, StyleSheet } from "react-native";
+import Sidebar from "../../../src/components/Sidebar";
 
-export default function Dashboard() {
+export default function StudentDashboard() {
   return (
-    <View style={{ padding: 20 }}>
-      <Text
-        style={{
-          fontSize: 24,
-          fontWeight: "bold",
-          marginBottom: 20,
-        }}
-      >
-        Student Dashboard
-      </Text>
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <Text style={styles.title}>Student Dashboard</Text>
+        <Text>Welcome Student</Text>
+      </View>
 
-      <Text>
-        Welcome to SAEC College App
-      </Text>
+      <Sidebar role="student" />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  content: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+  },
+});
+
