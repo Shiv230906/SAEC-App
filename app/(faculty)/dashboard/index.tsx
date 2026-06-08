@@ -1,9 +1,15 @@
+import { Link } from "expo-router";
 import { View, Text } from "react-native";
+
 
 export default function Page() {
   return (
     <View>
-      <Text>Coming Soon</Text>
+      <Text>Faculty Dashboard</Text>
+    
+    <Link href="/(faculty)/assignments">
+          Go to Assignments
+        </Link>
     </View>
   );
 }
