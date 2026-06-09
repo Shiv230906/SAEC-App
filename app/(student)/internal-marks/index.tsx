@@ -1,11 +1,10 @@
-import { View, Text } from "react-native";
-import Navbar from "../../../src/components/Navbar";
+import { FeaturePlaceholderScreen } from "@/src/components/screens/FeaturePlaceholderScreen";
 
 export default function InternalMarks() {
   return (
-    <View style={{ padding: 20 }}>
-      <Navbar />
-      <Text>Internal Marks Screen</Text>
-    </View>
+    <FeaturePlaceholderScreen
+      title="Internal Marks"
+      description="Track internal assessment marks and progress."
+    />
   );
 }

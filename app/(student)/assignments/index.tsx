@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
   FlatList,
   StyleSheet,
   ActivityIndicator,
+  View,
 } from "react-native";
+
+import { Card, Screen, Text } from "@/src/components/ui";
 import { supabase } from "../../../src/services/supabase";
+import { COLORS, SPACING } from "@/src/theme";
+
+type StudentAssignment = {
+  batch?: string | null;
+  description?: string | null;
+  due_date?: string | null;
+  id: string | number;
+  title?: string | null;
+};
 
 export default function StudentAssignments() {
-  const [assignments, setAssignments] = useState<any[]>([]);
+  const [assignments, setAssignments] = useState<StudentAssignment[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // TEMPORARY
-  const studentBatch = "2-A";
 
   useEffect(() => {
     fetchAssignments();
@@ -24,7 +31,6 @@ export default function StudentAssignments() {
       const { data, error } = await supabase
         .from("assignments")
         .select("*")
-        
         .order("due_date", { ascending: true });
 
       if (error) {
@@ -41,80 +47,67 @@ export default function StudentAssignments() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
+      <Screen contentContainerStyle={styles.center}>
+        <ActivityIndicator color={COLORS.primary} size="large" />
+      </Screen>
     );
   }
- 
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>My Assignments</Text>
+    <Screen contentContainerStyle={styles.container}>
+      <View style={styles.header}>
+        <Text variant="subHeading">Assignments</Text>
+        <Text color={COLORS.textSecondary} variant="body">
+          Track upcoming work and submissions.
+        </Text>
+      </View>
 
       <FlatList
+        contentContainerStyle={styles.list}
         data={assignments}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.title}>{item.title}</Text>
+          <Card style={styles.card}>
+            <Text variant="innerHeading">{item.title ?? "Untitled"}</Text>
 
-            <Text style={styles.description}>
+            <Text color={COLORS.textSecondary} variant="body">
               {item.description}
             </Text>
 
-            <Text style={styles.batch}>
+            <Text color={COLORS.textSecondary} variant="caption">
               Batch: {item.batch}
             </Text>
 
-            <Text style={styles.deadline}>
+            <Text color={COLORS.primary} variant="caption">
               Due Date: {item.due_date}
             </Text>
-          </View>
+          </Card>
         )}
         ListEmptyComponent={
-          <Text>No assignments available.</Text>
+          <Text color={COLORS.textSecondary}>No assignments available.</Text>
         }
       />
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
-  },
   center: {
+    alignItems: "center",
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 15,
   },
   card: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 12,
-    elevation: 3,
+    gap: SPACING.sm,
   },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
+  container: {
+    flex: 1,
+    gap: SPACING.lg,
   },
-  description: {
-    marginTop: 5,
+  header: {
+    gap: SPACING.sm,
   },
-  batch: {
-    marginTop: 8,
-    fontWeight: "600",
-  },
-  deadline: {
-    marginTop: 5,
-    color: "red",
+  list: {
+    gap: SPACING.md,
   },
 });

@@ -1,30 +1,53 @@
-import { View, Text, StyleSheet } from "react-native";
-import Sidebar from "../../../src/components/Sidebar";
+import { StyleSheet, View } from "react-native";
+
+import { ProfileHeader } from "@/src/components/profile/ProfileHeader";
+import { Card, Screen, Text } from "@/src/components/ui";
+import { COLORS, SPACING } from "@/src/theme";
 
 export default function AdminDashboard() {
   return (
-    <View style={styles.container}>
+    <Screen>
       <View style={styles.content}>
-        <Text style={styles.title}>Admin Dashboard</Text>
-        <Text>Manage Students, Faculty and Reports</Text>
-      </View>
+        <View style={styles.header}>
+          <ProfileHeader role="admin" />
+          <Text variant="subHeading">Welcome back</Text>
+          <Text color={COLORS.textSecondary} variant="body">
+            Manage users, departments, payments, and reports.
+          </Text>
+        </View>
 
-      <Sidebar role="admin" />
-    </View>
+        <View style={styles.widgets}>
+          <Card style={styles.highlightCard}>
+            <Text variant="innerHeading">Users</Text>
+            <Text color={COLORS.textSecondary} variant="caption">
+              Review student and faculty records.
+            </Text>
+          </Card>
+
+          <Card>
+            <Text variant="innerHeading">Reports</Text>
+            <Text color={COLORS.textSecondary} variant="caption">
+              Track institution-wide activity.
+            </Text>
+          </Card>
+        </View>
+      </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "row",
-  },
   content: {
     flex: 1,
-    padding: 20,
+    gap: SPACING.lg,
   },
-  title: {
-    fontSize: 26,
-    fontWeight: "bold",
+  header: {
+    gap: SPACING.sm,
+  },
+  highlightCard: {
+    backgroundColor: COLORS.primaryLight,
+  },
+  widgets: {
+    gap: SPACING.md,
   },
 });

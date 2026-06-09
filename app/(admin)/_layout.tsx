@@ -1,17 +1,18 @@
 import { Redirect, Stack } from "expo-router";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 
 import { getDashboardRoute, useAuth } from "../../src/context/AuthContext";
-import SignOutButton from "../../src/components/SignOutButton";
+import { Screen } from "../../src/components/ui";
+import { COLORS } from "../../src/theme";
 
 export default function AdminLayout() {
   const { loading, session, role } = useAuth();
 
   if (loading) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator />
-      </View>
+      <Screen contentContainerStyle={styles.loadingContainer}>
+        <ActivityIndicator color={COLORS.primary} />
+      </Screen>
     );
   }
 
@@ -26,8 +27,16 @@ export default function AdminLayout() {
   return (
     <Stack
       screenOptions={{
-        headerRight: () => <SignOutButton />,
+        headerShown: false,
       }}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    alignItems: "center",
+    flex: 1,
+    justifyContent: "center",
+  },
+});

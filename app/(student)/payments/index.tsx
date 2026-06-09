@@ -1,11 +1,10 @@
-import { View, Text } from "react-native";
-import Navbar from "../../../src/components/Navbar";
+import { FeaturePlaceholderScreen } from "@/src/components/screens/FeaturePlaceholderScreen";
 
 export default function Payments() {
   return (
-    <View style={{ padding: 20 }}>
-      <Navbar />
-      <Text>Payments Screen</Text>
-    </View>
+    <FeaturePlaceholderScreen
+      title="Payments"
+      description="Review fee payments and upcoming dues."
+    />
   );
 }

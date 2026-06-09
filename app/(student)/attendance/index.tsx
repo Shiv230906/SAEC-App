@@ -1,11 +1,10 @@
-import { View, Text } from "react-native";
-import Navbar from "../../../src/components/Navbar";
+import { FeaturePlaceholderScreen } from "@/src/components/screens/FeaturePlaceholderScreen";
 
 export default function Attendance() {
   return (
-    <View style={{ padding: 20 }}>
-      <Navbar />
-      <Text>Attendance Screen</Text>
-    </View>
+    <FeaturePlaceholderScreen
+      title="Attendance"
+      description="View daily attendance status and history."
+    />
   );
 }

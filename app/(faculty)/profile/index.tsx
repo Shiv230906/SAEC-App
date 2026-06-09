@@ -1,9 +1,5 @@
-import { View, Text } from "react-native";
+import { ProfileScreen } from "@/src/components/profile/ProfileScreen";
 
-export default function Page() {
-  return (
-    <View>
-      <Text>Coming Soon</Text>
-    </View>
-  );
+export default function FacultyProfile() {
+  return <ProfileScreen role="faculty" />;
 }

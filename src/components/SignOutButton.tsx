@@ -1,10 +1,32 @@
 import { useState } from "react";
-import { Alert, Button } from "react-native";
+import { Alert } from "react-native";
 import { router } from "expo-router";
 
 import { useAuth } from "../context/AuthContext";
+import { Button, type ButtonProps } from "./ui";
 
-export default function SignOutButton() {
+type SignOutButtonProps = {
+  style?: ButtonProps["style"];
+};
+
+function getErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "message" in error &&
+    typeof error.message === "string"
+  ) {
+    return error.message;
+  }
+
+  return String(error);
+}
+
+export default function SignOutButton({ style }: SignOutButtonProps) {
   const { signOut } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
 
@@ -13,8 +35,8 @@ export default function SignOutButton() {
       setIsSigningOut(true);
       await signOut();
       router.replace("/login");
-    } catch (error: any) {
-      Alert.alert("Sign out failed", error?.message ?? String(error));
+    } catch (error) {
+      Alert.alert("Sign out failed", getErrorMessage(error));
     } finally {
       setIsSigningOut(false);
     }
@@ -22,9 +44,11 @@ export default function SignOutButton() {
 
   return (
     <Button
-      title={isSigningOut ? "Signing out..." : "Sign out"}
+      loading={isSigningOut}
       onPress={handleSignOut}
       disabled={isSigningOut}
+      style={style}
+      title={isSigningOut ? "Signing out..." : "Sign Out"}
     />
   );
 }

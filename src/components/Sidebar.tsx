@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { router } from "expo-router";
 
+import { COLORS, SPACING, TYPOGRAPHY } from "../theme";
+
 export default function Sidebar({ role }: { role: string }) {
   const studentItems = [
     { title: "Dashboard", route: "/(student)/dashboard" },
@@ -64,25 +66,27 @@ export default function Sidebar({ role }: { role: string }) {
 
 const styles = StyleSheet.create({
   sidebar: {
-    width: 220,
-    backgroundColor: "#1E293B",
-    paddingTop: 40,
     height: "100%",
+    backgroundColor: COLORS.primary,
+    paddingTop: SPACING.xl,
+    width: 220,
   },
   logo: {
-    color: "white",
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 30,
+    color: COLORS.white,
+    fontFamily: TYPOGRAPHY.innerHeading.fontFamily,
+    fontSize: TYPOGRAPHY.innerHeading.fontSize,
+    fontWeight: TYPOGRAPHY.innerHeading.fontWeight,
+    marginBottom: SPACING.lg,
     textAlign: "center",
   },
   menuItem: {
-    padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#334155",
+    borderBottomColor: COLORS.primaryLight,
+    padding: SPACING.md,
   },
   menuText: {
-    color: "white",
-    fontSize: 16,
+    color: COLORS.white,
+    fontFamily: TYPOGRAPHY.body.fontFamily,
+    fontSize: TYPOGRAPHY.body.fontSize,
   },
 });

@@ -1,9 +1,5 @@
-import { View, Text } from "react-native";
+import { FeaturePlaceholderScreen } from "@/src/components/screens/FeaturePlaceholderScreen";
 
 export default function Page() {
-  return (
-    <View>
-      <Text>Coming Soon</Text>
-    </View>
-  );
+  return <FeaturePlaceholderScreen title="Users" />;
 }

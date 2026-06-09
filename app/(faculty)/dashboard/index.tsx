@@ -1,30 +1,53 @@
-import { View, Text, StyleSheet } from "react-native";
-import Sidebar from "../../../src/components/Sidebar";
+import { StyleSheet, View } from "react-native";
+
+import { ProfileHeader } from "@/src/components/profile/ProfileHeader";
+import { Card, Screen, Text } from "@/src/components/ui";
+import { COLORS, SPACING } from "@/src/theme";
 
 export default function FacultyDashboard() {
   return (
-    <View style={styles.container}>
+    <Screen>
       <View style={styles.content}>
-        <Text style={styles.title}>Faculty Dashboard</Text>
-        <Text>Manage Attendance, Assignments and Marks</Text>
-      </View>
+        <View style={styles.header}>
+          <ProfileHeader role="faculty" />
+          <Text variant="subHeading">Welcome back</Text>
+          <Text color={COLORS.textSecondary} variant="body">
+            Manage attendance, assignments, and class notes.
+          </Text>
+        </View>
 
-      <Sidebar role="faculty" />
-    </View>
+        <View style={styles.widgets}>
+          <Card style={styles.highlightCard}>
+            <Text variant="innerHeading">Attendance</Text>
+            <Text color={COLORS.textSecondary} variant="caption">
+              Mark and review class attendance.
+            </Text>
+          </Card>
+
+          <Card>
+            <Text variant="innerHeading">Assignments</Text>
+            <Text color={COLORS.textSecondary} variant="caption">
+              Create work and track submissions.
+            </Text>
+          </Card>
+        </View>
+      </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "row",
-  },
   content: {
     flex: 1,
-    padding: 20,
+    gap: SPACING.lg,
   },
-  title: {
-    fontSize: 26,
-    fontWeight: "bold",
+  header: {
+    gap: SPACING.sm,
+  },
+  highlightCard: {
+    backgroundColor: COLORS.primaryLight,
+  },
+  widgets: {
+    gap: SPACING.md,
   },
 });
