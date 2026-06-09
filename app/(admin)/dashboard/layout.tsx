@@ -12,4 +12,4 @@ export default function AdminLayout() {
       <Drawer.Screen name="settings" />
     </Drawer>
   );
-}t 
+}
