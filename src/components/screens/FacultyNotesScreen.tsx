@@ -215,9 +215,10 @@ export function FacultyNotesScreen() {
                   Edit
                 </ActionButton>
                 <ActionButton
-                  labelColor={COLORS.error}
                   onPress={() => deleteNote(note.id)}
-                  variant="link"
+                  style={styles.deleteButton}
+                  labelColor={COLORS.white}
+                  variant="peach"
                 >
                   Delete
                 </ActionButton>
@@ -259,7 +260,12 @@ function Chip({
 const styles = StyleSheet.create({
   actionRow: {
     flexDirection: "row",
-    gap: SPACING.sm,
+    flexWrap: "wrap",
+    gap: SPACING.md,
+    marginTop: SPACING.sm,
+  },
+  deleteButton: {
+    backgroundColor: COLORS.error,
   },
   container: {
     gap: SPACING.lg,

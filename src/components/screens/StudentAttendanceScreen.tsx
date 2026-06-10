@@ -3,13 +3,13 @@ import { StyleSheet, View } from "react-native";
 import {
   AttendanceProgressBar,
   DefaulterWarningCard,
-  WeeklyAttendanceTimeline,
+  MonthlyAttendanceCalendar,
 } from "@/src/components/attendance";
 import { Card, Screen, Text } from "@/src/components/ui";
 import {
+  studentMonthlyAttendance,
   studentOverallAttendance,
   studentSubjectAttendance,
-  studentWeeklyAttendance,
 } from "@/src/data/attendanceMockData";
 import { COLORS, FONT_FAMILY, RADIUS, SPACING } from "@/src/theme";
 
@@ -95,8 +95,8 @@ export function StudentAttendanceScreen() {
       </View>
 
       <View style={styles.section}>
-        <Text variant="innerHeading">Weekly Attendance</Text>
-        <WeeklyAttendanceTimeline days={studentWeeklyAttendance} />
+        <Text variant="innerHeading">Monthly Attendance</Text>
+        <MonthlyAttendanceCalendar days={studentMonthlyAttendance} />
       </View>
     </Screen>
   );

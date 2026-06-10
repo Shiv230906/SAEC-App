@@ -43,20 +43,28 @@ export default function FacultyAssignments() {
   };
 
   const createAssignment = async () => {
+    if (!title.trim()) {
+      Alert.alert("Validation", "Please enter a title");
+      return;
+    }
+
     setSubmitting(true);
 
     try {
       let pdfUrl = "";
 
       if (pdf) {
-        const response = await fetch(pdf.uri);
-        const blob = await response.blob();
-
         const fileName = `${Date.now()}-${pdf.name}`;
+
+        const response = await fetch(pdf.uri);
+        const arrayBuffer = await response.arrayBuffer();
 
         const { error } = await supabase.storage
           .from("assignments")
-          .upload(fileName, blob);
+          .upload(fileName, arrayBuffer, {
+            contentType: pdf.mimeType ?? "application/pdf",
+            upsert: false,
+          });
 
         if (error) throw error;
 
@@ -67,6 +75,14 @@ export default function FacultyAssignments() {
         pdfUrl = data.publicUrl;
       }
 
+      let isoDate: string | null = null;
+      if (dueDate) {
+        const parts = dueDate.split("-");
+        if (parts.length === 3) {
+          isoDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+      }
+
       const { error } = await supabase
         .from("assignments")
         .insert([
@@ -74,8 +90,8 @@ export default function FacultyAssignments() {
             title,
             description,
             batch,
-            due_date: dueDate,
-            pdf_url: pdfUrl,
+            due_date: isoDate,
+            pdf_url: pdfUrl || null,
           },
         ]);
 
@@ -131,10 +147,18 @@ export default function FacultyAssignments() {
         />
 
         <Input
-          label="Due Date"
-          onChangeText={setDueDate}
-          placeholder="2026-06-20"
+          label="Due Date (DD-MM-YYYY)"
+          onChangeText={(text) => {
+            const cleaned = text.replace(/[^0-9]/g, "");
+            let formatted = cleaned;
+            if (cleaned.length > 2) formatted = cleaned.slice(0, 2) + "-" + cleaned.slice(2);
+            if (cleaned.length > 4) formatted = cleaned.slice(0, 2) + "-" + cleaned.slice(2, 4) + "-" + cleaned.slice(4, 8);
+            setDueDate(formatted);
+          }}
+          placeholder="20-06-2026"
           value={dueDate}
+          keyboardType="numeric"
+          maxLength={10}
         />
 
         <Button

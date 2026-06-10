@@ -22,18 +22,21 @@ export const dashboardStyles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLORS.primaryLight,
     borderRadius: RADIUS.lg,
+    paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.sm + 2,
   },
   navyButton: {
     alignItems: "center",
     backgroundColor: COLORS.navy,
     borderRadius: RADIUS.lg,
+    paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.sm + 2,
   },
   blueButton: {
     alignItems: "center",
     backgroundColor: COLORS.accentBlue,
     borderRadius: RADIUS.lg,
+    paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.sm + 2,
   },
   buttonLabel: {

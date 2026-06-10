@@ -7,8 +7,6 @@ import CurrentClassCard from "@/src/components/faculty-dashboard/CurrentClassCar
 import NoticeBoard from "@/src/components/faculty-dashboard/NoticeBoard";
 import PendingMarksEntry from "@/src/components/faculty-dashboard/PendingMarksEntry";
 import PendingTasks from "@/src/components/faculty-dashboard/PendingTasks";
-import ProfileHeader from "@/src/components/faculty-dashboard/ProfileHeader";
-import QuickActions from "@/src/components/faculty-dashboard/QuickActions";
 import QuickStats from "@/src/components/faculty-dashboard/QuickStats";
 import RecentNotesUpload from "@/src/components/faculty-dashboard/RecentNotesUpload";
 import SubjectPerformance from "@/src/components/faculty-dashboard/SubjectPerformance";
@@ -20,7 +18,6 @@ export default function FacultyDashboard() {
       contentContainerStyle={dashboardStyles.container}
       style={dashboardStyles.screen}
     >
-      <ProfileHeader />
       <AttendanceReminder />
       <CurrentClassCard />
       <PendingTasks />
@@ -31,7 +28,6 @@ export default function FacultyDashboard() {
       <AssignmentOverview />
       <RecentNotesUpload />
       <NoticeBoard />
-      <QuickActions />
     </Screen>
   );
 }

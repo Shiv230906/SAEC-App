@@ -12,7 +12,7 @@ import { COLORS } from "@/src/theme";
 const metrics = [
   { key: "students", label: "Students" },
   { key: "faculty", label: "Faculty" },
-  { key: "courses", label: "Courses" },
+  { key: "subjects", label: "Subjects" },
   { key: "activeEvents", label: "Active Events" },
 ] as const;
 

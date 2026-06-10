@@ -6,7 +6,7 @@ export type AdminProfile = {
 
 export type CollegeOverview = {
   activeEvents: number;
-  courses: number;
+  subjects: number;
   faculty: number;
   students: number;
 };
@@ -64,7 +64,7 @@ export const adminProfile: AdminProfile = {
 
 export const collegeOverview: CollegeOverview = {
   activeEvents: 3,
-  courses: 12,
+  subjects: 18,
   faculty: 78,
   students: 1050,
 };

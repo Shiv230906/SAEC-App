@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { router, type Href } from "expo-router";
 import type { ComponentType } from "react";
 import type { SvgProps } from "react-native-svg";
+import { MaterialIcons } from "@expo/vector-icons";
 
 import { ProfileHeader } from "./ProfileHeader";
 import AssignmentIcon from "@/src/utils/icons/assignment.svg";
@@ -21,6 +22,7 @@ type SvgIcon = ComponentType<SvgProps>;
 type MenuItem = {
   href: Href;
   icon?: SvgIcon;
+  materialIcon?: keyof typeof MaterialIcons.glyphMap;
   title: string;
 };
 
@@ -34,7 +36,7 @@ const menuItemsByRole = {
     },
     { href: "/(admin)/reports", icon: MarksIcon, title: "Reports" },
     { href: "/(admin)/payments", icon: PaymentIcon, title: "Payments" },
-    { href: "/(admin)/settings", title: "Settings" },
+    { href: "/(admin)/settings", materialIcon: "settings" as const, title: "Settings" },
   ],
   faculty: [
     {
@@ -53,7 +55,7 @@ const menuItemsByRole = {
       title: "Internal Marks Management",
     },
     { href: "/(faculty)/events", icon: EventsIcon, title: "Events" },
-    { href: "/(faculty)/settings", title: "Settings" },
+    { href: "/(faculty)/settings", materialIcon: "settings" as const, title: "Settings" },
   ],
   student: [
     { href: "/(student)/payments", icon: PaymentIcon, title: "Payments" },
@@ -64,7 +66,7 @@ const menuItemsByRole = {
       icon: MarksIcon,
       title: "Internal Marks",
     },
-    { href: "/(student)/settings", title: "Settings" },
+    { href: "/(student)/settings", materialIcon: "settings" as const, title: "Settings" },
   ],
 } satisfies Record<UserRole, MenuItem[]>;
 
@@ -125,7 +127,11 @@ function ProfileMenuItem({ item }: { item: MenuItem }) {
       ]}
     >
       <View style={styles.menuIcon}>
-        {Icon ? <Icon color={COLORS.primary} height={20} width={20} /> : null}
+        {Icon ? (
+          <Icon color={COLORS.primary} height={20} width={20} />
+        ) : item.materialIcon ? (
+          <MaterialIcons color={COLORS.primary} name={item.materialIcon} size={20} />
+        ) : null}
       </View>
 
       <Text style={styles.menuText} variant="body">

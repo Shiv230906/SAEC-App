@@ -116,7 +116,9 @@ export function StudentNotesScreen() {
 const styles = StyleSheet.create({
   actionRow: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: SPACING.sm,
+    marginTop: SPACING.xs,
   },
   container: {
     gap: SPACING.lg,

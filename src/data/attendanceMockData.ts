@@ -278,6 +278,44 @@ export const studentWeeklyAttendance: WeeklyAttendanceDay[] = [
   { day: "Friday", status: "present" },
 ];
 
+export type MonthlyAttendanceDay = {
+  date: number;
+  status: AttendanceStatus | "holiday" | null;
+};
+
+export const studentMonthlyAttendance: MonthlyAttendanceDay[] = [
+  { date: 1, status: "holiday" },
+  { date: 2, status: "present" },
+  { date: 3, status: "present" },
+  { date: 4, status: "present" },
+  { date: 5, status: "absent" },
+  { date: 6, status: "present" },
+  { date: 7, status: "holiday" },
+  { date: 8, status: "holiday" },
+  { date: 9, status: "present" },
+  { date: 10, status: "present" },
+  { date: 11, status: null },
+  { date: 12, status: null },
+  { date: 13, status: null },
+  { date: 14, status: null },
+  { date: 15, status: null },
+  { date: 16, status: null },
+  { date: 17, status: null },
+  { date: 18, status: null },
+  { date: 19, status: null },
+  { date: 20, status: null },
+  { date: 21, status: null },
+  { date: 22, status: null },
+  { date: 23, status: null },
+  { date: 24, status: null },
+  { date: 25, status: null },
+  { date: 26, status: null },
+  { date: 27, status: null },
+  { date: 28, status: null },
+  { date: 29, status: null },
+  { date: 30, status: null },
+];
+
 export const studentSubjectAttendance = [
   { percentage: 92, subject: "DBMS" },
   { percentage: 88, subject: "OS" },

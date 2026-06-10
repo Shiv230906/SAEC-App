@@ -121,29 +121,41 @@ export function FacultyAttendanceScreen() {
       </View>
 
       <View style={styles.classCard}>
-        <Text color={COLORS.white} style={styles.classSubject}>
-          {currentClass.subject}
-        </Text>
-        <Text color={COLORS.white} variant="body">
-          {currentClass.section}
-        </Text>
-        <View style={styles.metaRow}>
-          <MaterialIcons color={COLORS.white} name="event" size={16} />
-          <Text color={COLORS.white} variant="caption">
-            {formatAttendanceDate()}
-          </Text>
+        <View style={styles.classTop}>
+          <View style={styles.subjectBadge}>
+            <MaterialIcons color={COLORS.white} name="class" size={22} />
+          </View>
+          <View style={styles.classInfo}>
+            <Text color={COLORS.white} style={styles.classSubject}>
+              {currentClass.subject}
+            </Text>
+            <Text color={COLORS.accentBlueMuted} style={styles.sectionText}>
+              {currentClass.section}
+            </Text>
+          </View>
         </View>
-        <View style={styles.metaRow}>
-          <MaterialIcons color={COLORS.white} name="schedule" size={16} />
-          <Text color={COLORS.white} variant="caption">
-            {currentClass.startTime} - {currentClass.endTime}
-          </Text>
-        </View>
-        <View style={styles.metaRow}>
-          <MaterialIcons color={COLORS.white} name="meeting-room" size={16} />
-          <Text color={COLORS.white} variant="caption">
-            Room {currentClass.room}
-          </Text>
+
+        <View style={styles.metaDivider} />
+
+        <View style={styles.metaGrid}>
+          <View style={styles.metaItem}>
+            <MaterialIcons color={COLORS.primary} name="event" size={18} />
+            <Text color={COLORS.white} variant="caption">
+              {formatAttendanceDate()}
+            </Text>
+          </View>
+          <View style={styles.metaItem}>
+            <MaterialIcons color={COLORS.primary} name="schedule" size={18} />
+            <Text color={COLORS.white} variant="caption">
+              {currentClass.startTime} – {currentClass.endTime}
+            </Text>
+          </View>
+          <View style={styles.metaItem}>
+            <MaterialIcons color={COLORS.primary} name="meeting-room" size={18} />
+            <Text color={COLORS.white} variant="caption">
+              Room {currentClass.room}
+            </Text>
+          </View>
         </View>
       </View>
 
@@ -197,15 +209,57 @@ export function FacultyAttendanceScreen() {
 const styles = StyleSheet.create({
   classCard: {
     backgroundColor: COLORS.navyDark,
+    borderColor: COLORS.navy,
     borderRadius: 20,
-    boxShadow: `0 4px 12px ${COLORS.shadow}`,
-    gap: SPACING.xs,
+    borderWidth: 1,
+    gap: SPACING.md,
     padding: SPACING.lg,
+    shadowColor: COLORS.black,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  classInfo: {
+    flex: 1,
+    gap: SPACING.xs,
   },
   classSubject: {
     fontFamily: FONT_FAMILY.bold,
     fontSize: 22,
-    lineHeight: 30,
+    letterSpacing: 0.3,
+    lineHeight: 28,
+  },
+  classTop: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: SPACING.md,
+  },
+  metaDivider: {
+    backgroundColor: "rgba(255,255,255,0.12)",
+    height: 1,
+  },
+  metaGrid: {
+    gap: SPACING.sm,
+  },
+  metaItem: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: SPACING.sm,
+  },
+  sectionText: {
+    fontFamily: FONT_FAMILY.semiBold,
+    fontSize: 14,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+  },
+  subjectBadge: {
+    alignItems: "center",
+    backgroundColor: COLORS.primary,
+    borderRadius: RADIUS.lg,
+    height: 44,
+    justifyContent: "center",
+    width: 44,
   },
   container: {
     gap: SPACING.lg,
@@ -218,11 +272,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-  },
-  metaRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: SPACING.xs,
   },
   screen: {
     backgroundColor: COLORS.pageBackground,
