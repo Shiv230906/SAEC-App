@@ -7,6 +7,7 @@ import AssignmentIcon from "@/src/utils/icons/assignment.svg";
 import AttendanceIcon from "@/src/utils/icons/attendance.svg";
 import DashboardIcon from "@/src/utils/icons/dashboard.svg";
 import NotesIcon from "@/src/utils/icons/notes.svg";
+import ProfileIcon from "@/src/utils/icons/profile.svg";
 import { COLORS, TYPOGRAPHY } from "@/src/theme";
 
 type TabIcon = ComponentType<SvgProps>;
@@ -53,11 +54,11 @@ export default function FacultyLayout() {
         options={tabOptions("Notes", NotesIcon)}
       />
       <Tabs.Screen
-        name="internal-marks"
-        options={{ href: null }}
+        name="profile"
+        options={tabOptions("My Profile", ProfileIcon)}
       />
       <Tabs.Screen
-        name="profile"
+        name="internal-marks"
         options={{ href: null }}
       />
       <Tabs.Screen

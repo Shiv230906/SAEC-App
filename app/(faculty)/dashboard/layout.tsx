@@ -1,13 +1,5 @@
-import { Drawer } from "expo-router/drawer";
+import { Stack } from "expo-router";
 
 export default function FacultyLayout() {
-  return (
-    <Drawer>
-      <Drawer.Screen name="dashboard" />
-      <Drawer.Screen name="attendance" />
-      <Drawer.Screen name="assignments" />
-      <Drawer.Screen name="internal-marks" />
-      <Drawer.Screen name="events" />
-    </Drawer>
-  );
+  return <Stack screenOptions={{ headerShown: false }} />;
 }

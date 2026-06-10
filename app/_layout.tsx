@@ -2,10 +2,14 @@ import { useEffect } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 
+import { BrandMark } from "../src/components/BrandMark";
 import { ProfileHeader } from "../src/components/profile/ProfileHeader";
 import { AuthProvider } from "../src/context/AuthContext";
 import { COLORS } from "../src/theme";
+
+void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -20,9 +24,16 @@ export default function RootLayout() {
     }
   }, [fontError]);
 
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      void SplashScreen.hideAsync();
+    }
+  }, [fontError, fontsLoaded]);
+
   if (!fontsLoaded && !fontError) {
     return (
       <View style={styles.loadingContainer}>
+        <BrandMark />
         <ActivityIndicator color={COLORS.primary} />
       </View>
     );

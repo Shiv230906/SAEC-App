@@ -3,6 +3,9 @@ import { router, type Href } from "expo-router";
 import type { ComponentType } from "react";
 import type { SvgProps } from "react-native-svg";
 
+import { ProfileHeader } from "./ProfileHeader";
+import AssignmentIcon from "@/src/utils/icons/assignment.svg";
+import AttendanceIcon from "@/src/utils/icons/attendance.svg";
 import EventsIcon from "@/src/utils/icons/events.svg";
 import MarksIcon from "@/src/utils/icons/marks.svg";
 import PaymentIcon from "@/src/utils/icons/payment.svg";
@@ -13,19 +16,7 @@ import { Card, Screen, Text } from "@/src/components/ui";
 import { useAuth, type UserRole } from "@/src/context/AuthContext";
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
 
-import { ProfileHeader } from "./ProfileHeader";
-import { getDisplayName, getRoleLabel } from "./profileUtils";
-
 type SvgIcon = ComponentType<SvgProps>;
-
-type ProfileMenuRouteSet = {
-  events: Href;
-  internalMarks: Href;
-  payments: Href;
-  profile: Href;
-  settings: Href;
-  timetable: Href;
-};
 
 type MenuItem = {
   href: Href;
@@ -33,44 +24,55 @@ type MenuItem = {
   title: string;
 };
 
-const menuRoutes = {
-  admin: {
-    events: "/(admin)/events",
-    internalMarks: "/(admin)/internal-marks",
-    payments: "/(admin)/payments",
-    profile: "/(admin)/profile",
-    settings: "/(admin)/settings",
-    timetable: "/(admin)/timetable",
-  },
-  faculty: {
-    events: "/(faculty)/events",
-    internalMarks: "/(faculty)/internal-marks",
-    payments: "/(faculty)/payments",
-    profile: "/(faculty)/profile",
-    settings: "/(faculty)/settings",
-    timetable: "/(faculty)/timetable",
-  },
-  student: {
-    events: "/(student)/events",
-    internalMarks: "/(student)/internal-marks",
-    payments: "/(student)/payments",
-    profile: "/(student)/profile",
-    settings: "/(student)/settings",
-    timetable: "/(student)/timetable",
-  },
-} satisfies Record<UserRole, ProfileMenuRouteSet>;
+const menuItemsByRole = {
+  admin: [
+    { href: "/(admin)/profile", icon: ProfileIcon, title: "My Profile" },
+    { href: "/(admin)/users", icon: ProfileIcon, title: "User Management" },
+    {
+      href: "/(admin)/departments",
+      icon: TimetableIcon,
+      title: "Department Management",
+    },
+    { href: "/(admin)/reports", icon: MarksIcon, title: "Reports" },
+    { href: "/(admin)/payments", icon: PaymentIcon, title: "Payments" },
+    { href: "/(admin)/settings", title: "Settings" },
+  ],
+  faculty: [
+    { href: "/(faculty)/profile", icon: ProfileIcon, title: "My Profile" },
+    {
+      href: "/(faculty)/attendance",
+      icon: AttendanceIcon,
+      title: "Attendance Management",
+    },
+    {
+      href: "/(faculty)/assignments",
+      icon: AssignmentIcon,
+      title: "Assignment Management",
+    },
+    {
+      href: "/(faculty)/internal-marks",
+      icon: MarksIcon,
+      title: "Internal Marks Management",
+    },
+    { href: "/(faculty)/events", icon: EventsIcon, title: "Events" },
+    { href: "/(faculty)/settings", title: "Settings" },
+  ],
+  student: [
+    { href: "/(student)/profile", icon: ProfileIcon, title: "My Profile" },
+    { href: "/(student)/payments", icon: PaymentIcon, title: "Payments" },
+    { href: "/(student)/events", icon: EventsIcon, title: "Events" },
+    { href: "/(student)/timetable", icon: TimetableIcon, title: "Timetable" },
+    {
+      href: "/(student)/internal-marks",
+      icon: MarksIcon,
+      title: "Internal Marks",
+    },
+    { href: "/(student)/settings", title: "Settings" },
+  ],
+} satisfies Record<UserRole, MenuItem[]>;
 
 function getMenuItems(role: UserRole): MenuItem[] {
-  const routes = menuRoutes[role];
-
-  return [
-    { href: routes.profile, icon: ProfileIcon, title: "My Profile" },
-    { href: routes.payments, icon: PaymentIcon, title: "Payments" },
-    { href: routes.events, icon: EventsIcon, title: "Events" },
-    { href: routes.timetable, icon: TimetableIcon, title: "Timetable" },
-    { href: routes.internalMarks, icon: MarksIcon, title: "Internal Marks" },
-    { href: routes.settings, title: "Settings" },
-  ];
+  return menuItemsByRole[role];
 }
 
 export type ProfileScreenProps = {
@@ -78,52 +80,31 @@ export type ProfileScreenProps = {
 };
 
 export function ProfileScreen({ role }: ProfileScreenProps) {
-  const { profile, user } = useAuth();
-  const fullName = getDisplayName(profile, user);
-  const roleLabel = getRoleLabel(role);
+  const { user } = useAuth();
+  const menuItems = getMenuItems(role);
 
   return (
     <Screen scrollable contentContainerStyle={styles.container}>
       <Card style={styles.summaryCard}>
         <ProfileHeader disabled role={role} />
 
-        <View style={styles.profileDetails}>
-          <View style={styles.detailRow}>
+        {user?.email ? (
+          <View style={styles.summaryCopy}>
             <Text color={COLORS.textSecondary} variant="caption">
-              Full name
+              Email
             </Text>
             <Text selectable variant="body">
-              {fullName ?? "User"}
+              {user.email}
             </Text>
           </View>
-
-          <View style={styles.detailRow}>
-            <Text color={COLORS.textSecondary} variant="caption">
-              Role
-            </Text>
-            <Text selectable variant="body">
-              {roleLabel}
-            </Text>
-          </View>
-
-          {user?.email ? (
-            <View style={styles.detailRow}>
-              <Text color={COLORS.textSecondary} variant="caption">
-                Email
-              </Text>
-              <Text selectable variant="body">
-                {user.email}
-              </Text>
-            </View>
-          ) : null}
-        </View>
+        ) : null}
       </Card>
 
       <Card style={styles.menuCard}>
         <Text variant="innerHeading">Profile Menu</Text>
 
         <View style={styles.menuItems}>
-          {getMenuItems(role).map((item) => (
+          {menuItems.map((item) => (
             <ProfileMenuItem key={item.title} item={item} />
           ))}
         </View>
@@ -161,7 +142,7 @@ const styles = StyleSheet.create({
   container: {
     gap: SPACING.lg,
   },
-  detailRow: {
+  summaryCopy: {
     gap: SPACING.xs,
   },
   menuCard: {
@@ -195,12 +176,9 @@ const styles = StyleSheet.create({
   menuText: {
     flex: 1,
   },
-  profileDetails: {
-    gap: SPACING.md,
-  },
   summaryCard: {
     backgroundColor: COLORS.primaryLight,
-    gap: SPACING.lg,
+    gap: SPACING.md,
   },
 });
 

@@ -1,15 +1,5 @@
-import { Drawer } from "expo-router/drawer";
+import { Stack } from "expo-router";
 
 export default function AdminLayout() {
-  return (
-    <Drawer>
-      <Drawer.Screen name="dashboard" />
-      <Drawer.Screen name="users" />
-      <Drawer.Screen name="departments" />
-      <Drawer.Screen name="courses" />
-      <Drawer.Screen name="payments" />
-      <Drawer.Screen name="reports" />
-      <Drawer.Screen name="settings" />
-    </Drawer>
-  );
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
