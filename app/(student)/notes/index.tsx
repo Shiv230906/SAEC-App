@@ -1,5 +1,5 @@
-import { FeaturePlaceholderScreen } from "@/src/components/screens/FeaturePlaceholderScreen";
+import { StudentNotesScreen } from "@/src/components/screens/StudentNotesScreen";
 
-export default function Page() {
-  return <FeaturePlaceholderScreen title="Notes" />;
+export default function Notes() {
+  return <StudentNotesScreen />;
 }

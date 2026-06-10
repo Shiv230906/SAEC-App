@@ -1,5 +1,5 @@
-import { FeaturePlaceholderScreen } from "@/src/components/screens/FeaturePlaceholderScreen";
+import { EventsDashboardScreen } from "@/src/components/screens/EventsDashboardScreen";
 
 export default function Page() {
-  return <FeaturePlaceholderScreen title="Events" />;
+  return <EventsDashboardScreen role="faculty" />;
 }

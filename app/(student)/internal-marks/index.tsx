@@ -1,10 +1,5 @@
-import { FeaturePlaceholderScreen } from "@/src/components/screens/FeaturePlaceholderScreen";
+import { StudentInternalMarksScreen } from "@/src/components/screens/StudentInternalMarksScreen";
 
 export default function InternalMarks() {
-  return (
-    <FeaturePlaceholderScreen
-      title="Internal Marks"
-      description="Track internal assessment marks and progress."
-    />
-  );
+  return <StudentInternalMarksScreen />;
 }

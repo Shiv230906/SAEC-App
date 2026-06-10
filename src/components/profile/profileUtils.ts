@@ -40,6 +40,21 @@ export function getRoleLabel(role: UserRole | null) {
   return role ? roleLabels[role] : undefined;
 }
 
+export function getStudentSubtitle(profile: ProfileLike) {
+  const year =
+    getStringField(profile, ["year", "year_of_study", "current_year"]) ??
+    "III Year";
+  const branch =
+    getStringField(profile, [
+      "branch",
+      "department",
+      "course",
+      "program",
+    ]) ?? "CSE";
+
+  return `${year} ${branch} - Student`;
+}
+
 export function getProfileRoute(role: UserRole) {
   if (role === "admin") {
     return "/(admin)/profile" as const;

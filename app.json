@@ -38,8 +38,8 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#FFFFFF",
-          "image": "./assets/android-icon-foreground.png",
-          "imageWidth": 180,
+          "image": "./assets/SAEC_college_logo_login.png",
+          "imageWidth": 220,
           "resizeMode": "contain"
         }
       ]

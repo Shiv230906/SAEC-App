@@ -1,10 +1,5 @@
-import { FeaturePlaceholderScreen } from "@/src/components/screens/FeaturePlaceholderScreen";
+import { StudentPaymentsScreen } from "@/src/components/screens/StudentPaymentsScreen";
 
 export default function Payments() {
-  return (
-    <FeaturePlaceholderScreen
-      title="Payments"
-      description="Review fee payments and upcoming dues."
-    />
-  );
+  return <StudentPaymentsScreen />;
 }

@@ -1,10 +1,5 @@
-import { FeaturePlaceholderScreen } from "@/src/components/screens/FeaturePlaceholderScreen";
+import { StudentAttendanceScreen } from "@/src/components/screens/StudentAttendanceScreen";
 
 export default function Attendance() {
-  return (
-    <FeaturePlaceholderScreen
-      title="Attendance"
-      description="View daily attendance status and history."
-    />
-  );
+  return <StudentAttendanceScreen />;
 }

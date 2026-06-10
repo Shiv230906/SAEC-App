@@ -1,14 +1,16 @@
 import { Tabs } from "expo-router";
 import type { ComponentType } from "react";
+import { Platform } from "react-native";
 import type { ColorValue } from "react-native";
 import type { SvgProps } from "react-native-svg";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import AssignmentIcon from "@/src/utils/icons/assignment.svg";
 import AttendanceIcon from "@/src/utils/icons/attendance.svg";
 import DashboardIcon from "@/src/utils/icons/dashboard.svg";
+import EventsIcon from "@/src/utils/icons/events.svg";
 import NotesIcon from "@/src/utils/icons/notes.svg";
-import ProfileIcon from "@/src/utils/icons/profile.svg";
-import { COLORS, TYPOGRAPHY } from "@/src/theme";
+import { COLORS, SPACING, TYPOGRAPHY } from "@/src/theme";
 
 type TabIcon = ComponentType<SvgProps>;
 
@@ -22,18 +24,39 @@ function tabOptions(title: string, Icon: TabIcon) {
 }
 
 export default function StudentLayout() {
+  const insets = useSafeAreaInsets();
+  const tabBarBottomInset = Math.max(insets.bottom, SPACING.xs);
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.gray500,
+        tabBarAllowFontScaling: false,
+        tabBarIconStyle: {
+          marginBottom: -2,
+        },
+        tabBarItemStyle: {
+          flex: 1,
+          paddingVertical: SPACING.xs,
+        },
         tabBarLabelStyle: {
           fontFamily: TYPOGRAPHY.caption.fontFamily,
-          fontSize: TYPOGRAPHY.caption.fontSize,
+          fontSize: 11,
+          lineHeight: 14,
         },
         tabBarStyle: {
+          backgroundColor: COLORS.background,
           borderTopColor: COLORS.primaryLight,
+          borderTopWidth: 1,
+          height: 52 + tabBarBottomInset,
+          paddingBottom: tabBarBottomInset,
+          paddingTop: SPACING.xs,
+          ...Platform.select({
+            android: { elevation: 8 },
+            default: {},
+          }),
         },
       }}
     >
@@ -54,8 +77,8 @@ export default function StudentLayout() {
         options={tabOptions("Notes", NotesIcon)}
       />
       <Tabs.Screen
-        name="profile"
-        options={tabOptions("My Profile", ProfileIcon)}
+        name="events"
+        options={tabOptions("Events", EventsIcon)}
       />
       <Tabs.Screen
         name="internal-marks"
@@ -66,7 +89,7 @@ export default function StudentLayout() {
         options={{ href: null }}
       />
       <Tabs.Screen
-        name="events"
+        name="profile"
         options={{ href: null }}
       />
       <Tabs.Screen

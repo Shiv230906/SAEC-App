@@ -26,7 +26,6 @@ type MenuItem = {
 
 const menuItemsByRole = {
   admin: [
-    { href: "/(admin)/profile", icon: ProfileIcon, title: "My Profile" },
     { href: "/(admin)/users", icon: ProfileIcon, title: "User Management" },
     {
       href: "/(admin)/departments",
@@ -38,7 +37,6 @@ const menuItemsByRole = {
     { href: "/(admin)/settings", title: "Settings" },
   ],
   faculty: [
-    { href: "/(faculty)/profile", icon: ProfileIcon, title: "My Profile" },
     {
       href: "/(faculty)/attendance",
       icon: AttendanceIcon,
@@ -58,7 +56,6 @@ const menuItemsByRole = {
     { href: "/(faculty)/settings", title: "Settings" },
   ],
   student: [
-    { href: "/(student)/profile", icon: ProfileIcon, title: "My Profile" },
     { href: "/(student)/payments", icon: PaymentIcon, title: "Payments" },
     { href: "/(student)/events", icon: EventsIcon, title: "Events" },
     { href: "/(student)/timetable", icon: TimetableIcon, title: "Timetable" },

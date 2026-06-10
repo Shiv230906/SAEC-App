@@ -6,23 +6,35 @@ import { useAuth, type UserRole } from "@/src/context/AuthContext";
 import { COLORS, SPACING } from "@/src/theme";
 
 import { Avatar } from "./Avatar";
-import { getDisplayName, getProfileRoute, getRoleLabel } from "./profileUtils";
+import {
+  getDisplayName,
+  getProfileRoute,
+  getRoleLabel,
+  getStudentSubtitle,
+} from "./profileUtils";
 
 export type ProfileHeaderProps = {
   disabled?: boolean;
   role?: UserRole;
   showSubtitle?: boolean;
+  variant?: "default" | "light";
 };
 
 export function ProfileHeader({
   disabled = false,
   role: roleOverride,
   showSubtitle = true,
+  variant = "default",
 }: ProfileHeaderProps) {
   const { profile, role, user } = useAuth();
   const resolvedRole = roleOverride ?? role ?? "student";
   const fullName = getDisplayName(profile, user);
   const roleLabel = getRoleLabel(resolvedRole);
+  const subtitle =
+    resolvedRole === "student"
+      ? getStudentSubtitle(profile)
+      : roleLabel;
+  const isLight = variant === "light";
 
   function handlePress() {
     if (!disabled) {
@@ -44,12 +56,20 @@ export function ProfileHeader({
       <Avatar fullName={fullName} />
 
       <View style={styles.copy}>
-        <Text numberOfLines={1} style={styles.name} variant="body">
+        <Text
+          color={isLight ? COLORS.white : COLORS.textPrimary}
+          numberOfLines={1}
+          variant="body"
+        >
           {fullName ?? "User"}
         </Text>
-        {showSubtitle && roleLabel ? (
-          <Text color={COLORS.textSecondary} numberOfLines={1} variant="caption">
-            {roleLabel}
+        {showSubtitle && subtitle ? (
+          <Text
+            color={isLight ? COLORS.accentBlueMuted : COLORS.textSecondary}
+            numberOfLines={1}
+            variant="caption"
+          >
+            {subtitle}
           </Text>
         ) : null}
       </View>
@@ -67,9 +87,6 @@ const styles = StyleSheet.create({
   copy: {
     flexShrink: 1,
     minWidth: 0,
-  },
-  name: {
-    color: COLORS.textPrimary,
   },
   pressed: {
     opacity: 0.72,

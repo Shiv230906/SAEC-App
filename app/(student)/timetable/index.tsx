@@ -1,5 +1,5 @@
-import { FeaturePlaceholderScreen } from "@/src/components/screens/FeaturePlaceholderScreen";
+import { StudentTimetableScreen } from "@/src/components/screens/StudentTimetableScreen";
 
-export default function Page() {
-  return <FeaturePlaceholderScreen title="Timetable" />;
+export default function Timetable() {
+  return <StudentTimetableScreen />;
 }
