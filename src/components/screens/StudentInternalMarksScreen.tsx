@@ -1,26 +1,17 @@
 import { StyleSheet, View } from "react-native";
 
+import { AttendanceProgressBar } from "@/src/components/attendance";
+import { DashboardCard, SectionHeader } from "@/src/components/dashboard";
 import { Card, Screen, Text } from "@/src/components/ui";
 import {
-  studentInternalMarks,
-  studentPerformanceHighlights,
-} from "@/src/data/studentMockData";
+  studentMarksSummary,
+  studentMarksTimeline,
+  studentSubjectMarks,
+} from "@/src/data/marksMockData";
 import { COLORS, FONT_FAMILY, RADIUS, SPACING } from "@/src/theme";
 
-function gradeColor(grade: string) {
-  if (grade === "A") {
-    return COLORS.success;
-  }
-
-  if (grade === "B") {
-    return COLORS.primary;
-  }
-
-  return COLORS.warning;
-}
-
 export function StudentInternalMarksScreen() {
-  const { needsAttention, strongest } = studentPerformanceHighlights;
+  const { averageInternalScore, needsAttention, strongest } = studentMarksSummary;
 
   return (
     <Screen
@@ -31,7 +22,8 @@ export function StudentInternalMarksScreen() {
       <View style={styles.header}>
         <Text variant="subHeading">Internal Marks</Text>
         <Text color={COLORS.textSecondary} variant="body">
-          Track internal assessments, assignments, and subject performance.
+          View published internal marks, assessment history, and performance
+          trends.
         </Text>
       </View>
 
@@ -57,56 +49,67 @@ export function StudentInternalMarksScreen() {
         </Card>
       </View>
 
-      <View style={styles.section}>
-        <Text variant="innerHeading">Subject Breakdown</Text>
+      <DashboardCard>
+        <SectionHeader icon="analytics" title="Performance Summary" />
+        <View style={styles.averageRow}>
+          <Text color={COLORS.navy} style={styles.averageValue}>
+            {averageInternalScore}%
+          </Text>
+          <Text color={COLORS.textSecondary} variant="caption">
+            Average Internal Score
+          </Text>
+        </View>
+        <AttendanceProgressBar percentage={averageInternalScore} />
+      </DashboardCard>
 
-        {studentInternalMarks.map((mark) => (
+      <View style={styles.section}>
+        <Text variant="innerHeading">Subject Cards</Text>
+
+        {studentSubjectMarks.map((mark) => (
           <Card key={mark.subject} style={styles.markCard}>
             <View style={styles.markHeader}>
               <Text variant="body">{mark.subject}</Text>
-              <View
-                style={[
-                  styles.gradePill,
-                  { backgroundColor: `${gradeColor(mark.grade)}22` },
-                ]}
-              >
+              <View style={styles.gradePill}>
                 <Text
-                  color={gradeColor(mark.grade)}
+                  color={COLORS.navy}
                   style={styles.gradeText}
                   variant="caption"
                 >
-                  {mark.grade}
+                  Average {mark.average}/20
                 </Text>
               </View>
             </View>
 
             <View style={styles.scoreGrid}>
-              <View style={styles.scoreItem}>
+              {mark.assessments.slice(0, 2).map((assessment) => (
+                <View key={assessment.label} style={styles.scoreItem}>
+                  <Text color={COLORS.textSecondary} variant="caption">
+                    {assessment.label.replace("Internal Test ", "Internal ")}
+                  </Text>
+                  <Text variant="body">
+                    {assessment.score}/{assessment.maxMark}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </Card>
+        ))}
+      </View>
+
+      <View style={styles.section}>
+        <Text variant="innerHeading">Marks Timeline</Text>
+        {studentMarksTimeline.map((item) => (
+          <Card key={item.id} style={styles.timelineCard}>
+            <View style={styles.markHeader}>
+              <View style={styles.timelineCopy}>
+                <Text variant="body">{item.subject}</Text>
                 <Text color={COLORS.textSecondary} variant="caption">
-                  IA 1
-                </Text>
-                <Text variant="body">{mark.ia1}</Text>
-              </View>
-              <View style={styles.scoreItem}>
-                <Text color={COLORS.textSecondary} variant="caption">
-                  IA 2
-                </Text>
-                <Text variant="body">{mark.ia2}</Text>
-              </View>
-              <View style={styles.scoreItem}>
-                <Text color={COLORS.textSecondary} variant="caption">
-                  Assignment
-                </Text>
-                <Text variant="body">{mark.assignment}</Text>
-              </View>
-              <View style={styles.scoreItem}>
-                <Text color={COLORS.textSecondary} variant="caption">
-                  Total
-                </Text>
-                <Text color={COLORS.primary} variant="body">
-                  {mark.total}
+                  {item.label}
                 </Text>
               </View>
+              <Text color={COLORS.primary} variant="body">
+                {item.score}/{item.maxMark}
+              </Text>
             </View>
           </Card>
         ))}
@@ -120,7 +123,17 @@ const styles = StyleSheet.create({
     gap: SPACING.lg,
     paddingBottom: SPACING.xl,
   },
+  averageRow: {
+    alignItems: "center",
+    gap: SPACING.xs,
+  },
+  averageValue: {
+    fontFamily: FONT_FAMILY.bold,
+    fontSize: 40,
+    lineHeight: 48,
+  },
   gradePill: {
+    backgroundColor: COLORS.accentBlueMuted,
     borderRadius: RADIUS.pill,
     paddingHorizontal: SPACING.sm,
     paddingVertical: SPACING.xs,
@@ -152,11 +165,15 @@ const styles = StyleSheet.create({
   },
   scoreGrid: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: SPACING.md,
   },
   scoreItem: {
     alignItems: "center",
+    backgroundColor: COLORS.accentBlue,
+    borderRadius: RADIUS.lg,
+    flex: 1,
     gap: SPACING.xs,
+    padding: SPACING.md,
   },
   screen: {
     backgroundColor: COLORS.pageBackground,
@@ -166,6 +183,13 @@ const styles = StyleSheet.create({
   },
   strongCard: {
     backgroundColor: COLORS.primaryLight,
+  },
+  timelineCard: {
+    gap: SPACING.xs,
+  },
+  timelineCopy: {
+    flex: 1,
+    gap: SPACING.xs,
   },
 });
 

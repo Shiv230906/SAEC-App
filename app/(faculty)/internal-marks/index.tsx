@@ -1,5 +1,5 @@
-import { FeaturePlaceholderScreen } from "@/src/components/screens/FeaturePlaceholderScreen";
+import { FacultyInternalMarksScreen } from "@/src/components/screens/FacultyInternalMarksScreen";
 
 export default function Page() {
-  return <FeaturePlaceholderScreen title="Internal Marks" />;
+  return <FacultyInternalMarksScreen />;
 }

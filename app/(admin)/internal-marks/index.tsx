@@ -1,5 +1,5 @@
-import { FeaturePlaceholderScreen } from "@/src/components/screens/FeaturePlaceholderScreen";
+import { AdminInternalMarksScreen } from "@/src/components/screens/AdminInternalMarksScreen";
 
 export default function AdminInternalMarks() {
-  return <FeaturePlaceholderScreen title="Internal Marks" />;
+  return <AdminInternalMarksScreen />;
 }

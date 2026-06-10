@@ -11,14 +11,15 @@ import {
 } from "react-native";
 
 import { Card, Screen, Text } from "@/src/components/ui";
+import { studentTodayClassAttendance } from "@/src/data/attendanceMockData";
+import { studentMarksSummary } from "@/src/data/marksMockData";
+import { recentlyUploadedNotes } from "@/src/data/notesMockData";
 import {
   getAssignmentDotColor,
   studentAssignments,
   studentAttendanceSummary,
-  studentCurrentClass,
   studentEvents,
   studentNotices,
-  studentPerformanceHighlights,
   studentTimetableToday,
 } from "@/src/data/studentMockData";
 import { COLORS, FONT_FAMILY, RADIUS, SPACING } from "@/src/theme";
@@ -50,8 +51,9 @@ function DashboardCard({ children, style }: DashboardCardProps) {
 }
 
 function CurrentClassCard() {
-  const currentClass = studentCurrentClass;
-  const timeRange = `${currentClass.startTime.replace(" AM", "").replace(" PM", "")} - ${currentClass.endTime}`;
+  const currentClass = studentTodayClassAttendance;
+  const timeRange = `${currentClass.startTime} - ${currentClass.endTime}`;
+  const isPresent = currentClass.status === "present";
 
   return (
     <View style={styles.currentClassCard}>
@@ -83,11 +85,23 @@ function CurrentClassCard() {
         </View>
 
         <View style={styles.presentStatus}>
-          <View style={styles.presentIcon}>
-            <MaterialIcons color={COLORS.white} name="check" size={12} />
+          <View
+            style={[
+              styles.presentIcon,
+              !isPresent ? styles.absentIcon : undefined,
+            ]}
+          >
+            <MaterialIcons
+              color={COLORS.white}
+              name={isPresent ? "check" : "close"}
+              size={12}
+            />
           </View>
-          <Text color={COLORS.success} style={styles.presentLabel}>
-            Marked Present
+          <Text
+            color={isPresent ? COLORS.success : COLORS.error}
+            style={styles.presentLabel}
+          >
+            Attendance: {isPresent ? "Present" : "Absent"}
           </Text>
         </View>
       </View>
@@ -136,14 +150,14 @@ const performanceMetrics = [
   {
     accent: COLORS.primary,
     label: "Strongest Subject",
-    score: studentPerformanceHighlights.strongest.score,
-    subject: studentPerformanceHighlights.strongest.subject,
+    score: studentMarksSummary.strongest.score,
+    subject: studentMarksSummary.strongest.subject,
   },
   {
     accent: COLORS.gray300,
     label: "Needs Attention",
-    score: studentPerformanceHighlights.needsAttention.score,
-    subject: studentPerformanceHighlights.needsAttention.subject,
+    score: studentMarksSummary.needsAttention.score,
+    subject: studentMarksSummary.needsAttention.subject,
   },
 ];
 
@@ -240,6 +254,80 @@ function AttendanceSection() {
       >
         <Text color={COLORS.linkAccent} style={styles.buttonLabel}>
           View Subject Wise
+        </Text>
+      </Pressable>
+    </DashboardCard>
+  );
+}
+
+function RecentMarksSection() {
+  const recentMark = studentMarksSummary.recentPublished;
+
+  return (
+    <DashboardCard>
+      <SectionHeader icon="grade" title="New Marks Published" />
+
+      <View style={styles.noticeItem}>
+        <View style={styles.noticeHeader}>
+          <Text variant="body">
+            {recentMark.subject} {recentMark.assessment}
+          </Text>
+          <Text color={COLORS.primary} variant="body">
+            {recentMark.score}
+          </Text>
+        </View>
+        <Text color={COLORS.textSecondary} variant="caption">
+          Published by faculty
+        </Text>
+      </View>
+
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => router.push("/(student)/internal-marks")}
+        style={({ pressed }) => [
+          styles.peachButton,
+          pressed ? styles.pressed : undefined,
+        ]}
+      >
+        <Text color={COLORS.linkAccent} style={styles.buttonLabel}>
+          View Marks
+        </Text>
+      </Pressable>
+    </DashboardCard>
+  );
+}
+
+function NewNotesSection() {
+  return (
+    <DashboardCard>
+      <SectionHeader icon="description" title="New Notes Available" />
+
+      <View style={styles.noticeList}>
+        {recentlyUploadedNotes.map((note) => (
+          <View key={note.id} style={styles.noticeItem}>
+            <View style={styles.noticeHeader}>
+              <Text variant="body">{note.title}</Text>
+              <Text color={COLORS.textSecondary} variant="caption">
+                {note.uploaded}
+              </Text>
+            </View>
+            <Text color={COLORS.textSecondary} variant="caption">
+              {note.subject}
+            </Text>
+          </View>
+        ))}
+      </View>
+
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => router.push("/(student)/notes")}
+        style={({ pressed }) => [
+          styles.peachButton,
+          pressed ? styles.pressed : undefined,
+        ]}
+      >
+        <Text color={COLORS.linkAccent} style={styles.buttonLabel}>
+          Open Notes Hub
         </Text>
       </Pressable>
     </DashboardCard>
@@ -400,6 +488,8 @@ export function StudentDashboardScreen() {
       <TimetableSection />
       <PerformanceSection />
       <AttendanceSection />
+      <RecentMarksSection />
+      <NewNotesSection />
       <AssignmentsSection />
       <NoticeBoardSection />
       <UpcomingEventsSection />
@@ -464,6 +554,9 @@ const styles = StyleSheet.create({
     fontFamily: FONT_FAMILY.bold,
     fontSize: 11,
     letterSpacing: 0.6,
+  },
+  absentIcon: {
+    backgroundColor: COLORS.error,
   },
   presentIcon: {
     alignItems: "center",

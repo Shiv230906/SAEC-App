@@ -1,5 +1,5 @@
-import { FeaturePlaceholderScreen } from "@/src/components/screens/FeaturePlaceholderScreen";
+import { FacultyAttendanceScreen } from "@/src/components/screens/FacultyAttendanceScreen";
 
-export default function Page() {
-  return <FeaturePlaceholderScreen title="Attendance" />;
+export default function FacultyAttendance() {
+  return <FacultyAttendanceScreen />;
 }

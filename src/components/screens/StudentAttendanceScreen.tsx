@@ -1,15 +1,20 @@
 import { StyleSheet, View } from "react-native";
 
+import {
+  AttendanceProgressBar,
+  DefaulterWarningCard,
+  WeeklyAttendanceTimeline,
+} from "@/src/components/attendance";
 import { Card, Screen, Text } from "@/src/components/ui";
 import {
-  studentAttendanceBySubject,
-  studentAttendanceSummary,
-  studentRecentAttendance,
-} from "@/src/data/studentMockData";
+  studentOverallAttendance,
+  studentSubjectAttendance,
+  studentWeeklyAttendance,
+} from "@/src/data/attendanceMockData";
 import { COLORS, FONT_FAMILY, RADIUS, SPACING } from "@/src/theme";
 
 function SummaryCard() {
-  const { absent, percentage, present, total } = studentAttendanceSummary;
+  const { absent, percentage, present, total } = studentOverallAttendance;
 
   return (
     <Card style={styles.summaryCard}>
@@ -22,9 +27,7 @@ function SummaryCard() {
         </View>
       </View>
 
-      <View style={styles.progressTrack}>
-        <View style={[styles.progressFill, { width: `${percentage}%` }]} />
-      </View>
+      <AttendanceProgressBar percentage={percentage} />
 
       <View style={styles.statsRow}>
         <View style={styles.statItem}>
@@ -50,19 +53,9 @@ function SummaryCard() {
   );
 }
 
-function statusColor(status: "present" | "absent" | "holiday") {
-  if (status === "present") {
-    return COLORS.success;
-  }
-
-  if (status === "absent") {
-    return COLORS.error;
-  }
-
-  return COLORS.gray500;
-}
-
 export function StudentAttendanceScreen() {
+  const { percentage } = studentOverallAttendance;
+
   return (
     <Screen
       scrollable
@@ -72,16 +65,18 @@ export function StudentAttendanceScreen() {
       <View style={styles.header}>
         <Text variant="subHeading">Attendance</Text>
         <Text color={COLORS.textSecondary} variant="body">
-          View subject-wise attendance and recent class history.
+          View subject-wise attendance and weekly class history.
         </Text>
       </View>
 
       <SummaryCard />
 
+      <DefaulterWarningCard percentage={percentage} />
+
       <View style={styles.section}>
         <Text variant="innerHeading">Subject Wise</Text>
 
-        {studentAttendanceBySubject.map((item) => (
+        {studentSubjectAttendance.map((item) => (
           <Card key={item.subject} style={styles.subjectCard}>
             <View style={styles.subjectHeader}>
               <Text variant="body">{item.subject}</Text>
@@ -90,41 +85,18 @@ export function StudentAttendanceScreen() {
               </Text>
             </View>
 
-            <View style={styles.progressTrack}>
-              <View
-                style={[styles.progressFill, { width: `${item.percentage}%` }]}
-              />
-            </View>
+            <AttendanceProgressBar percentage={item.percentage} />
 
             <Text color={COLORS.textSecondary} variant="caption">
-              {item.attended} of {item.total} classes attended
+              Subject attendance summary
             </Text>
           </Card>
         ))}
       </View>
 
       <View style={styles.section}>
-        <Text variant="innerHeading">Recent History</Text>
-
-        {studentRecentAttendance.map((record) => (
-          <Card key={`${record.date}-${record.subject}`} style={styles.historyCard}>
-            <View style={styles.historyRow}>
-              <View style={styles.historyCopy}>
-                <Text variant="body">{record.subject}</Text>
-                <Text color={COLORS.textSecondary} variant="caption">
-                  {record.date}
-                </Text>
-              </View>
-              <Text
-                color={statusColor(record.status)}
-                style={styles.statusLabel}
-                variant="caption"
-              >
-                {record.status.toUpperCase()}
-              </Text>
-            </View>
-          </Card>
-        ))}
+        <Text variant="innerHeading">Weekly Attendance</Text>
+        <WeeklyAttendanceTimeline days={studentWeeklyAttendance} />
       </View>
     </Screen>
   );
@@ -138,18 +110,6 @@ const styles = StyleSheet.create({
   header: {
     gap: SPACING.xs,
   },
-  historyCard: {
-    gap: SPACING.xs,
-  },
-  historyCopy: {
-    flex: 1,
-    gap: SPACING.xs,
-  },
-  historyRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
   percentPill: {
     backgroundColor: COLORS.primary,
     borderRadius: RADIUS.pill,
@@ -159,17 +119,6 @@ const styles = StyleSheet.create({
   percentText: {
     fontFamily: FONT_FAMILY.semiBold,
     fontSize: 12,
-  },
-  progressFill: {
-    backgroundColor: COLORS.primary,
-    borderRadius: RADIUS.pill,
-    height: "100%",
-  },
-  progressTrack: {
-    backgroundColor: COLORS.accentBlueMuted,
-    borderRadius: RADIUS.pill,
-    height: 8,
-    overflow: "hidden",
   },
   screen: {
     backgroundColor: COLORS.pageBackground,
@@ -185,9 +134,6 @@ const styles = StyleSheet.create({
   statsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-  },
-  statusLabel: {
-    fontFamily: FONT_FAMILY.semiBold,
   },
   subjectCard: {
     gap: SPACING.sm,

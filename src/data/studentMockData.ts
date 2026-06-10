@@ -147,10 +147,10 @@ export const studentWeeklyTimetable: WeeklyTimetableDay[] = [
 ];
 
 export const studentAttendanceSummary = {
-  absent: 15,
-  percentage: 87,
-  present: 103,
-  total: 118,
+  absent: 14,
+  percentage: 72,
+  present: 36,
+  total: 50,
 };
 
 export const studentAttendanceBySubject: AttendanceSubject[] = [
