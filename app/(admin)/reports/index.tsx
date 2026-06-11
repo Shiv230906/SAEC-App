@@ -1,77 +1,59 @@
 import { useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
-import { supabase } from "@/src/services/supabase";
-import { Button, Card, Input, Screen, Text } from "@/src/components/ui";
-import { COLORS, SPACING } from "@/src/theme";
+import { ActionButton, dashboardStyles } from "@/src/components/dashboard";
+import { Card, Input, Screen, Text } from "@/src/components/ui";
+import {
+  recentlyAssignedTasks,
+  type AdminAssignedTask,
+  type TaskPriority,
+} from "@/src/data/adminTasksMockData";
+import { COLORS, RADIUS, SPACING } from "@/src/theme";
 
-const PRIORITIES = ["high", "medium", "low"] as const;
+const PRIORITIES: TaskPriority[] = ["high", "medium", "low"];
 
 export default function AdminAssignTask() {
   const [taskTitle, setTaskTitle] = useState("");
   const [assignee, setAssignee] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [priority, setPriority] = useState<(typeof PRIORITIES)[number]>("medium");
+  const [priority, setPriority] = useState<TaskPriority>("medium");
   const [description, setDescription] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [tasks, setTasks] = useState<AdminAssignedTask[]>(recentlyAssignedTasks);
+  const [message, setMessage] = useState("");
 
-  const assignTask = async () => {
+  const assignTask = () => {
     if (!taskTitle.trim() || !assignee.trim()) {
-      Alert.alert("Validation", "Task title and assignee are required.");
+      setMessage("Task title and assignee are required.");
       return;
     }
 
-    setSubmitting(true);
+    const newTask: AdminAssignedTask = {
+      assignedFaculty: assignee.trim(),
+      dueDate: dueDate || "No due date",
+      id: `task-local-${Date.now()}`,
+      priority,
+      status: "pending",
+      title: taskTitle.trim(),
+    };
 
-    try {
-      let isoDate: string | null = null;
-      if (dueDate) {
-        const parts = dueDate.split("-");
-        if (parts.length === 3) {
-          const day = parts[0].padStart(2, "0");
-          const month = parts[1].padStart(2, "0");
-          const year = parts[2];
-          isoDate = `${year}-${month}-${day}`;
-        }
-      }
-
-      const payload: Record<string, unknown> = {
-        title: taskTitle.trim(),
-        assignee: assignee.trim(),
-        priority,
-        description: description.trim() || null,
-        status: "pending",
-      };
-      if (isoDate) {
-        payload.due_date = isoDate;
-      }
-
-      const { error } = await supabase.from("tasks").insert([payload]);
-
-      if (error) throw error;
-
-      Alert.alert("Success", `Task assigned to ${assignee}.`);
-      setTaskTitle("");
-      setAssignee("");
-      setDueDate("");
-      setDescription("");
-    } catch (error: any) {
-      const msg =
-        error?.response?.data?.message ??
-        error?.message ??
-        (typeof error === "string" ? error : JSON.stringify(error));
-      Alert.alert("Error", msg);
-    } finally {
-      setSubmitting(false);
-    }
+    setTasks((current) => [newTask, ...current]);
+    setMessage(`Task assigned to ${assignee.trim()} locally.`);
+    setTaskTitle("");
+    setAssignee("");
+    setDueDate("");
+    setDescription("");
   };
 
   return (
-    <Screen scrollable contentContainerStyle={styles.container}>
+    <Screen
+      scrollable
+      contentContainerStyle={styles.container}
+      style={styles.screen}
+    >
       <View style={styles.header}>
         <Text variant="subHeading">Assign Task</Text>
         <Text color={COLORS.textSecondary} variant="body">
-          Assign tasks to faculty members and track progress.
+          Assign tasks to faculty members and track recently assigned work.
         </Text>
       </View>
 
@@ -86,7 +68,7 @@ export default function AdminAssignTask() {
         />
 
         <Input
-          label="Assign To (Faculty Name/Email)"
+          label="Assign To"
           onChangeText={setAssignee}
           placeholder="Dr. John Doe"
           value={assignee}
@@ -103,18 +85,22 @@ export default function AdminAssignTask() {
         />
 
         <Input
+          keyboardType="numeric"
           label="Due Date (DD-MM-YYYY)"
+          maxLength={10}
           onChangeText={(text) => {
             const cleaned = text.replace(/[^0-9]/g, "");
             let formatted = cleaned;
-            if (cleaned.length > 2) formatted = cleaned.slice(0, 2) + "-" + cleaned.slice(2);
-            if (cleaned.length > 4) formatted = cleaned.slice(0, 2) + "-" + cleaned.slice(2, 4) + "-" + cleaned.slice(4, 8);
+            if (cleaned.length > 2) {
+              formatted = `${cleaned.slice(0, 2)}-${cleaned.slice(2)}`;
+            }
+            if (cleaned.length > 4) {
+              formatted = `${cleaned.slice(0, 2)}-${cleaned.slice(2, 4)}-${cleaned.slice(4, 8)}`;
+            }
             setDueDate(formatted);
           }}
           placeholder="20-06-2026"
           value={dueDate}
-          keyboardType="numeric"
-          maxLength={10}
         />
 
         <View style={styles.prioritySection}>
@@ -122,30 +108,97 @@ export default function AdminAssignTask() {
             Priority
           </Text>
           <View style={styles.priorityRow}>
-            {PRIORITIES.map((p) => (
-              <Button
-                key={p}
-                onPress={() => setPriority(p)}
-                title={p.charAt(0).toUpperCase() + p.slice(1)}
-                variant={priority === p ? "primary" : "secondary"}
-              />
-            ))}
+            {PRIORITIES.map((item) => {
+              const isActive = item === priority;
+
+              return (
+                <Pressable
+                  key={item}
+                  accessibilityRole="button"
+                  onPress={() => setPriority(item)}
+                  style={({ pressed }) => [
+                    dashboardStyles.chip,
+                    isActive ? dashboardStyles.chipActive : undefined,
+                    pressed ? dashboardStyles.pressed : undefined,
+                  ]}
+                >
+                  <Text
+                    color={isActive ? COLORS.white : COLORS.textSecondary}
+                    variant="caption"
+                  >
+                    {item.charAt(0).toUpperCase() + item.slice(1)}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
         </View>
 
-        <Button
-          loading={submitting}
-          onPress={assignTask}
-          title="Assign Task"
-        />
+        <ActionButton onPress={assignTask} variant="navy">
+          Assign Task
+        </ActionButton>
       </Card>
+
+      {message ? (
+        <Card style={styles.messageCard}>
+          <Text
+            color={message.includes("required") ? COLORS.error : COLORS.success}
+            variant="body"
+          >
+            {message}
+          </Text>
+        </Card>
+      ) : null}
+
+      <View style={styles.section}>
+        <Text variant="innerHeading">Recently Assigned Tasks</Text>
+
+        {tasks.map((task) => (
+          <Card key={task.id} style={styles.taskCard}>
+            <View style={styles.taskHeader}>
+              <View style={styles.taskCopy}>
+                <Text variant="body">{task.title}</Text>
+                <Text color={COLORS.textSecondary} variant="caption">
+                  Assigned to {task.assignedFaculty}
+                </Text>
+              </View>
+              <View
+                style={[
+                  styles.statusBadge,
+                  task.status === "completed"
+                    ? styles.completedBadge
+                    : styles.pendingBadge,
+                ]}
+              >
+                <Text
+                  color={
+                    task.status === "completed"
+                      ? COLORS.success
+                      : COLORS.linkAccent
+                  }
+                  variant="caption"
+                >
+                  {task.status === "completed" ? "Completed" : "Pending"}
+                </Text>
+              </View>
+            </View>
+            <Text color={COLORS.textSecondary} variant="caption">
+              Due {task.dueDate} · {task.priority.toUpperCase()}
+            </Text>
+          </Card>
+        ))}
+      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  completedBadge: {
+    backgroundColor: "#DCFCE7",
+  },
   container: {
     gap: SPACING.lg,
+    paddingBottom: SPACING.xl,
   },
   descriptionInput: {
     minHeight: 100,
@@ -156,11 +209,42 @@ const styles = StyleSheet.create({
   header: {
     gap: SPACING.sm,
   },
+  messageCard: {
+    backgroundColor: "#F0FDF4",
+    borderColor: "#BBF7D0",
+  },
+  pendingBadge: {
+    backgroundColor: COLORS.primaryLight,
+  },
   priorityRow: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: SPACING.sm,
   },
   prioritySection: {
+    gap: SPACING.sm,
+  },
+  screen: {
+    backgroundColor: COLORS.pageBackground,
+  },
+  section: {
+    gap: SPACING.md,
+  },
+  statusBadge: {
+    borderRadius: RADIUS.pill,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: 2,
+  },
+  taskCard: {
+    gap: SPACING.sm,
+  },
+  taskCopy: {
+    flex: 1,
+    gap: 2,
+  },
+  taskHeader: {
+    alignItems: "center",
+    flexDirection: "row",
     gap: SPACING.sm,
   },
 });

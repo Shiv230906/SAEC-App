@@ -12,10 +12,13 @@ import { ROUTES } from "@/src/constants/routes";
 import {
   facultyPendingTasks,
   getTaskPriorityColor,
+  loggedInFacultyId,
 } from "@/src/data/facultyMockData";
 
 export default function PendingTasks() {
-  const tasks = facultyPendingTasks.slice(0, 3);
+  const tasks = facultyPendingTasks
+    .filter((task) => task.assignedFacultyId === loggedInFacultyId)
+    .slice(0, 3);
 
   return (
     <DashboardCard>

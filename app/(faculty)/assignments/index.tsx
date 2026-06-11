@@ -1,128 +1,65 @@
 import { useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
-import * as DocumentPicker from "expo-document-picker";
-import { supabase } from "@/src/services/supabase";
-import { Button, Card, Input, Screen, Text } from "@/src/components/ui";
+import { ActionButton } from "@/src/components/dashboard";
+import { Card, Input, Screen, Text } from "@/src/components/ui";
+import {
+  recentlyUploadedAssignments,
+  type FacultyUploadedAssignment,
+} from "@/src/data/facultyAssignmentsMockData";
 import { COLORS, SPACING } from "@/src/theme";
 
-function getErrorMessage(error: unknown) {
-  if (error instanceof Error) {
-    return error.message;
-  }
-
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "message" in error &&
-    typeof error.message === "string"
-  ) {
-    return error.message;
-  }
-
-  return String(error);
-}
-
 export default function FacultyAssignments() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [batch, setBatch] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [pdf, setPdf] =
-    useState<DocumentPicker.DocumentPickerAsset | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const [title, setTitle] = useState("DBMS Assignment 3");
+  const [description, setDescription] = useState(
+    "Normalize the given schema to 3NF and submit relational diagrams.",
+  );
+  const [subject, setSubject] = useState("DBMS");
+  const [className, setClassName] = useState("CSE C");
+  const [dueDate, setDueDate] = useState("20-06-2026");
+  const [mockFile, setMockFile] = useState("dbms-assignment-3.pdf");
+  const [assignments, setAssignments] = useState<FacultyUploadedAssignment[]>(
+    recentlyUploadedAssignments,
+  );
+  const [message, setMessage] = useState("");
 
-  const pickPDF = async () => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: "application/pdf",
-    });
-
-    if (!result.canceled) {
-      setPdf(result.assets[0]);
-    }
-  };
-
-  const createAssignment = async () => {
+  const createAssignment = () => {
     if (!title.trim()) {
-      Alert.alert("Validation", "Please enter a title");
+      setMessage("Please enter an assignment title.");
       return;
     }
 
-    setSubmitting(true);
+    const newAssignment: FacultyUploadedAssignment = {
+      className,
+      id: `assignment-local-${Date.now()}`,
+      subject,
+      title: title.trim(),
+      uploadDate: "Uploaded just now",
+    };
 
-    try {
-      let pdfUrl = "";
-
-      if (pdf) {
-        const fileName = `${Date.now()}-${pdf.name}`;
-
-        const response = await fetch(pdf.uri);
-        const arrayBuffer = await response.arrayBuffer();
-
-        const { error } = await supabase.storage
-          .from("assignments")
-          .upload(fileName, arrayBuffer, {
-            contentType: pdf.mimeType ?? "application/pdf",
-            upsert: false,
-          });
-
-        if (error) throw error;
-
-        const { data } = supabase.storage
-          .from("assignments")
-          .getPublicUrl(fileName);
-
-        pdfUrl = data.publicUrl;
-      }
-
-      let isoDate: string | null = null;
-      if (dueDate) {
-        const parts = dueDate.split("-");
-        if (parts.length === 3) {
-          isoDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-        }
-      }
-
-      const { error } = await supabase
-        .from("assignments")
-        .insert([
-          {
-            title,
-            description,
-            batch,
-            due_date: isoDate,
-            pdf_url: pdfUrl || null,
-          },
-        ]);
-
-      if (error) throw error;
-
-      Alert.alert("Success", "Assignment Created");
-
-      setTitle("");
-      setDescription("");
-      setBatch("");
-      setDueDate("");
-      setPdf(null);
-    } catch (error) {
-      console.log("FULL ERROR:", error);
-      Alert.alert("Error", getErrorMessage(error));
-    } finally {
-      setSubmitting(false);
-    }
+    setAssignments((current) => [newAssignment, ...current]);
+    setMessage(`Assignment "${title.trim()}" uploaded locally.`);
+    setTitle("");
+    setDescription("");
+    setDueDate("");
+    setMockFile("assignment.pdf");
   };
 
   return (
-    <Screen scrollable contentContainerStyle={styles.container}>
+    <Screen
+      scrollable
+      contentContainerStyle={styles.container}
+      style={styles.screen}
+    >
       <View style={styles.header}>
-        <Text style={styles.darkText} variant="subHeading">Assignments</Text>
-        <Text style={styles.subtitleText} variant="body">
-          Create coursework and attach a PDF for students.
+        <Text variant="subHeading">Assignments</Text>
+        <Text color={COLORS.textSecondary} variant="body">
+          Create coursework with mock file details and review recent uploads.
         </Text>
       </View>
 
       <Card style={styles.formCard}>
-        <Text style={styles.darkText} variant="innerHeading">Create Assignment</Text>
+        <Text variant="innerHeading">Create Assignment</Text>
 
         <Input
           label="Title"
@@ -142,52 +79,117 @@ export default function FacultyAssignments() {
         />
 
         <Input
-          label="Batch"
-          onChangeText={setBatch}
-          placeholder="2-A"
-          value={batch}
+          label="Subject"
+          onChangeText={setSubject}
+          placeholder="DBMS"
+          value={subject}
         />
 
         <Input
+          label="Class"
+          onChangeText={setClassName}
+          placeholder="CSE C"
+          value={className}
+        />
+
+        <Input
+          keyboardType="numeric"
           label="Due Date (DD-MM-YYYY)"
+          maxLength={10}
           onChangeText={(text) => {
             const cleaned = text.replace(/[^0-9]/g, "");
             let formatted = cleaned;
-            if (cleaned.length > 2) formatted = cleaned.slice(0, 2) + "-" + cleaned.slice(2);
-            if (cleaned.length > 4) formatted = cleaned.slice(0, 2) + "-" + cleaned.slice(2, 4) + "-" + cleaned.slice(4, 8);
+            if (cleaned.length > 2) {
+              formatted = `${cleaned.slice(0, 2)}-${cleaned.slice(2)}`;
+            }
+            if (cleaned.length > 4) {
+              formatted = `${cleaned.slice(0, 2)}-${cleaned.slice(2, 4)}-${cleaned.slice(4, 8)}`;
+            }
             setDueDate(formatted);
           }}
           placeholder="20-06-2026"
           value={dueDate}
-          keyboardType="numeric"
-          maxLength={10}
         />
 
-        <Button
-          onPress={pickPDF}
-          title={pdf ? pdf.name : "Select PDF"}
-          variant="secondary"
+        <Input
+          label="Mock File"
+          onChangeText={setMockFile}
+          placeholder="assignment.pdf"
+          value={mockFile}
         />
 
-        <Button
-          loading={submitting}
-          onPress={createAssignment}
-          title="Create Assignment"
-        />
+        <ActionButton onPress={createAssignment} variant="navy">
+          Create Assignment
+        </ActionButton>
       </Card>
+
+      {message ? (
+        <Card style={styles.messageCard}>
+          <Text
+            color={message.includes("Please") ? COLORS.error : COLORS.success}
+            variant="body"
+          >
+            {message}
+          </Text>
+        </Card>
+      ) : null}
+
+      <View style={styles.section}>
+        <Text variant="innerHeading">Recently Uploaded Assignments</Text>
+
+        {assignments.map((assignment) => (
+          <Card key={assignment.id} style={styles.assignmentCard}>
+            <View style={styles.assignmentHeader}>
+              <View style={styles.assignmentCopy}>
+                <Text variant="body">{assignment.title}</Text>
+                <Text color={COLORS.textSecondary} variant="caption">
+                  {assignment.subject} · {assignment.className}
+                </Text>
+                <Text color={COLORS.textSecondary} variant="caption">
+                  {assignment.uploadDate}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.actionRow}>
+              <ActionButton variant="peach">View</ActionButton>
+              <ActionButton variant="peach">Edit</ActionButton>
+              <ActionButton
+                labelColor={COLORS.error}
+                onPress={() =>
+                  setAssignments((current) =>
+                    current.filter((item) => item.id !== assignment.id),
+                  )
+                }
+                variant="link"
+              >
+                Delete
+              </ActionButton>
+            </View>
+          </Card>
+        ))}
+      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  actionRow: {
+    flexDirection: "row",
+    gap: SPACING.sm,
+  },
+  assignmentCard: {
+    gap: SPACING.md,
+  },
+  assignmentCopy: {
+    flex: 1,
+    gap: SPACING.xs,
+  },
+  assignmentHeader: {
+    flexDirection: "row",
+  },
   container: {
     gap: SPACING.lg,
-  },
-  darkText: {
-    color: "#0F172A",
-  },
-  subtitleText: {
-    color: "#334155",
+    paddingBottom: SPACING.xl,
   },
   descriptionInput: {
     minHeight: 112,
@@ -197,5 +199,15 @@ const styles = StyleSheet.create({
   },
   header: {
     gap: SPACING.sm,
+  },
+  messageCard: {
+    backgroundColor: "#F0FDF4",
+    borderColor: "#BBF7D0",
+  },
+  screen: {
+    backgroundColor: COLORS.pageBackground,
+  },
+  section: {
+    gap: SPACING.md,
   },
 });

@@ -1,126 +1,208 @@
-import { StyleSheet, View } from "react-native";
+import { useState } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import { Card, Screen, Text } from "@/src/components/ui";
-import { COLORS, FONT_FAMILY, RADIUS, SPACING } from "@/src/theme";
+import {
+  classWisePayments,
+  getClassPaymentStats,
+  type ClassPaymentSummary,
+  type PaymentStatus,
+} from "@/src/data/paymentMockData";
+import { COLORS, RADIUS, SPACING } from "@/src/theme";
 
-type PaymentRecord = {
-  id: string;
-  studentName: string;
-  transactionId: string;
-  amount: number;
-  date: string;
-  status: "paid" | "pending" | "overdue";
+const STATUS_CONFIG: Record<
+  PaymentStatus,
+  { backgroundColor: string; color: string; label: string }
+> = {
+  paid: {
+    backgroundColor: "#DCFCE7",
+    color: COLORS.success,
+    label: "Paid",
+  },
+  pending: {
+    backgroundColor: COLORS.primaryLight,
+    color: COLORS.linkAccent,
+    label: "Pending",
+  },
 };
 
-const MOCK_PAYMENTS: PaymentRecord[] = [
-  { id: "1", studentName: "Rahul Sharma", transactionId: "TXN-2026-00142", amount: 45000, date: "Jun 10, 2026", status: "paid" },
-  { id: "2", studentName: "Priya Nair", transactionId: "TXN-2026-00143", amount: 45000, date: "Jun 9, 2026", status: "paid" },
-  { id: "3", studentName: "Arjun Patel", transactionId: "TXN-2026-00144", amount: 12000, date: "Jun 8, 2026", status: "paid" },
-  { id: "4", studentName: "Meera Joshi", transactionId: "TXN-2026-00145", amount: 45000, date: "Due Jun 25", status: "pending" },
-  { id: "5", studentName: "Kiran Kumar", transactionId: "TXN-2026-00146", amount: 8000, date: "Due Jun 15", status: "overdue" },
-  { id: "6", studentName: "Deepak S", transactionId: "TXN-2026-00147", amount: 45000, date: "Due Jun 25", status: "pending" },
-  { id: "7", studentName: "Sneha Reddy", transactionId: "TXN-2026-00148", amount: 10000, date: "Jun 5, 2026", status: "paid" },
-  { id: "8", studentName: "Vikram Singh", transactionId: "TXN-2026-00149", amount: 12000, date: "Due Jun 20", status: "overdue" },
-];
-
-const STATUS_CONFIG = {
-  paid: { label: "Paid", bg: "#DCFCE7", text: "#16A34A" },
-  pending: { label: "Pending", bg: "#FEF9C3", text: "#CA8A04" },
-  overdue: { label: "Overdue", bg: "#FEE2E2", text: "#DC2626" },
-} as const;
-
-function formatCurrency(amount: number) {
-  return `₹${amount.toLocaleString("en-IN")}`;
-}
-
 export default function AdminPayments() {
-  const totalCollected = MOCK_PAYMENTS
-    .filter((p) => p.status === "paid")
-    .reduce((sum, p) => sum + p.amount, 0);
-  const totalPending = MOCK_PAYMENTS
-    .filter((p) => p.status !== "paid")
-    .reduce((sum, p) => sum + p.amount, 0);
+  const [selectedClass, setSelectedClass] = useState<ClassPaymentSummary>(
+    classWisePayments[2] ?? classWisePayments[0],
+  );
+  const selectedStats = getClassPaymentStats(selectedClass);
 
   return (
-    <Screen scrollable contentContainerStyle={styles.container}>
+    <Screen
+      scrollable
+      contentContainerStyle={styles.container}
+      style={styles.screen}
+    >
       <View style={styles.header}>
         <Text variant="subHeading">Manage Payments</Text>
         <Text color={COLORS.textSecondary} variant="body">
-          Track student fee payments and transactions.
+          Monitor fee collection class-wise and review pending students.
         </Text>
       </View>
 
-      <View style={styles.statsRow}>
-        <Card style={styles.statCard}>
-          <Text color={COLORS.textSecondary} variant="caption">Collected</Text>
-          <Text color={COLORS.success} variant="innerHeading">{formatCurrency(totalCollected)}</Text>
-        </Card>
-        <Card style={styles.statCard}>
-          <Text color={COLORS.textSecondary} variant="caption">Pending</Text>
-          <Text color={COLORS.error} variant="innerHeading">{formatCurrency(totalPending)}</Text>
-        </Card>
+      <View style={styles.tabsRow}>
+        {classWisePayments.map((classPayment) => {
+          const isActive = classPayment.className === selectedClass.className;
+
+          return (
+            <Pressable
+              key={classPayment.className}
+              accessibilityRole="button"
+              onPress={() => setSelectedClass(classPayment)}
+              style={({ pressed }) => [
+                styles.tab,
+                isActive ? styles.tabActive : undefined,
+                pressed ? styles.pressed : undefined,
+              ]}
+            >
+              <Text
+                color={isActive ? COLORS.white : COLORS.textSecondary}
+                variant="caption"
+              >
+                {classPayment.className}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
 
-      <Card style={styles.tableCard}>
-        <Text variant="innerHeading">Recent Transactions</Text>
-
-        <View style={styles.tableHeader}>
-          <Text style={styles.colName} color={COLORS.textSecondary} variant="caption">Student</Text>
-          <Text style={styles.colTxn} color={COLORS.textSecondary} variant="caption">Transaction ID</Text>
-          <Text style={styles.colAmount} color={COLORS.textSecondary} variant="caption">Amount</Text>
-          <Text style={styles.colStatus} color={COLORS.textSecondary} variant="caption">Status</Text>
+      <Card style={styles.studentsCard}>
+        <View style={styles.classHeader}>
+          <Text variant="innerHeading">{selectedClass.className} Students</Text>
+          <Text color={COLORS.textSecondary} variant="caption">
+            Tap a class above to switch
+          </Text>
         </View>
 
-        {MOCK_PAYMENTS.map((payment) => {
-          const cfg = STATUS_CONFIG[payment.status];
+        {selectedClass.students.map((student) => {
+          const statusConfig = STATUS_CONFIG[student.status];
+
           return (
-            <View key={payment.id} style={styles.tableRow}>
-              <View style={styles.colName}>
-                <Text variant="body">{payment.studentName}</Text>
-                <Text color={COLORS.textSecondary} variant="caption">{payment.date}</Text>
-              </View>
-              <Text style={styles.colTxn} color={COLORS.textSecondary} variant="caption">{payment.transactionId}</Text>
-              <Text style={styles.colAmount} variant="body">{formatCurrency(payment.amount)}</Text>
-              <View style={styles.colStatus}>
-                <View style={[styles.badge, { backgroundColor: cfg.bg }]}>
-                  <Text color={cfg.text} variant="caption">{cfg.label}</Text>
-                </View>
+            <View key={student.id} style={styles.studentRow}>
+              <Text style={styles.studentName} variant="body">
+                {student.name}
+              </Text>
+              <View
+                style={[
+                  styles.badge,
+                  { backgroundColor: statusConfig.backgroundColor },
+                ]}
+              >
+                <Text color={statusConfig.color} variant="caption">
+                  {statusConfig.label}
+                </Text>
               </View>
             </View>
           );
         })}
       </Card>
+
+      <Card style={styles.summaryCard}>
+        <Text variant="innerHeading">{selectedClass.className} Summary</Text>
+        <View style={styles.summaryGrid}>
+          <SummaryItem label="Total Students" value={selectedStats.totalStudents} />
+          <SummaryItem label="Paid" value={selectedStats.paidStudents} />
+          <SummaryItem label="Pending" value={selectedStats.pendingStudents} />
+          <SummaryItem
+            label="Collection Rate"
+            value={`${selectedStats.collectionRate}%`}
+          />
+        </View>
+      </Card>
     </Screen>
   );
 }
 
+function SummaryItem({ label, value }: { label: string; value: number | string }) {
+  return (
+    <View style={styles.summaryItem}>
+      <Text color={COLORS.textSecondary} variant="caption">
+        {label}
+      </Text>
+      <Text variant="innerHeading">{value}</Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  container: { gap: SPACING.lg, paddingBottom: SPACING.xl },
-  header: { gap: SPACING.sm },
-  statsRow: { flexDirection: "row", gap: SPACING.md },
-  statCard: { flex: 1, alignItems: "center", gap: SPACING.xs },
-  tableCard: { gap: SPACING.md },
-  tableHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingBottom: SPACING.xs,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
-  },
-  tableRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: SPACING.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
-  },
-  colName: { flex: 3, gap: 2 },
-  colTxn: { flex: 3 },
-  colAmount: { flex: 2, textAlign: "right" },
-  colStatus: { flex: 2, alignItems: "flex-end" },
   badge: {
     borderRadius: RADIUS.pill,
     paddingHorizontal: SPACING.sm,
     paddingVertical: 2,
+  },
+  classHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  container: {
+    gap: SPACING.lg,
+    paddingBottom: SPACING.xl,
+  },
+  header: {
+    gap: SPACING.sm,
+  },
+  pressed: {
+    opacity: 0.76,
+  },
+  screen: {
+    backgroundColor: COLORS.pageBackground,
+  },
+  summaryCard: {
+    gap: SPACING.md,
+  },
+  summaryGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: SPACING.sm,
+  },
+  summaryItem: {
+    alignItems: "center",
+    backgroundColor: COLORS.accentBlue,
+    borderRadius: RADIUS.lg,
+    flexBasis: "47%",
+    flexGrow: 1,
+    gap: SPACING.xs,
+    minWidth: 130,
+    padding: SPACING.md,
+  },
+  studentName: {
+    flex: 1,
+  },
+  studentRow: {
+    alignItems: "center",
+    backgroundColor: COLORS.accentBlue,
+    borderRadius: RADIUS.lg,
+    flexDirection: "row",
+    gap: SPACING.md,
+    padding: SPACING.md,
+  },
+  studentsCard: {
+    gap: SPACING.sm,
+  },
+  tab: {
+    alignItems: "center",
+    backgroundColor: COLORS.surface,
+    borderColor: COLORS.border,
+    borderRadius: RADIUS.pill,
+    borderWidth: 1,
+    flex: 1,
+    minWidth: 64,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.sm,
+  },
+  tabActive: {
+    backgroundColor: COLORS.navy,
+    borderColor: COLORS.navy,
+  },
+  tabsRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: SPACING.sm,
   },
 });

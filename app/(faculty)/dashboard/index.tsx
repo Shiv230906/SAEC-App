@@ -2,7 +2,6 @@ import { Screen } from "@/src/components/ui";
 import { dashboardStyles } from "@/src/components/dashboard";
 import AssignmentOverview from "@/src/components/faculty-dashboard/AssignmentOverview";
 import AttendanceReminder from "@/src/components/faculty-dashboard/AttendanceReminder";
-import AttendanceStatus from "@/src/components/faculty-dashboard/AttendanceStatus";
 import CurrentClassCard from "@/src/components/faculty-dashboard/CurrentClassCard";
 import NoticeBoard from "@/src/components/faculty-dashboard/NoticeBoard";
 import PendingMarksEntry from "@/src/components/faculty-dashboard/PendingMarksEntry";
@@ -24,7 +23,6 @@ export default function FacultyDashboard() {
       <QuickStats />
       <PendingMarksEntry />
       <SubjectPerformance />
-      <AttendanceStatus />
       <AssignmentOverview />
       <RecentNotesUpload />
       <NoticeBoard />

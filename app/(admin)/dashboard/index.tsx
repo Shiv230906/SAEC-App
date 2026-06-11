@@ -1,6 +1,5 @@
 import { Screen } from "@/src/components/ui";
 import { dashboardStyles } from "@/src/components/dashboard";
-import ActionRequired from "@/src/components/admin-dashboard/ActionRequired";
 import AttendanceOverview from "@/src/components/admin-dashboard/AttendanceOverview";
 import CollegeOverview from "@/src/components/admin-dashboard/CollegeOverview";
 import EventsSummary from "@/src/components/admin-dashboard/EventsSummary";
@@ -17,7 +16,6 @@ export default function AdminDashboard() {
     >
       <CollegeOverview />
       <AttendanceOverview />
-      <ActionRequired />
       <FacultyTaskMonitoring />
       <PaymentStatus />
       <EventsSummary />

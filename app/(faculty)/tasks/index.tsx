@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 
 import { Card, Screen, Text } from "@/src/components/ui";
 import type { FacultyTaskListRecord } from "@/src/data/facultyMockData";
-import { facultyTaskList } from "@/src/data/facultyMockData";
+import { facultyTaskList, loggedInFacultyId } from "@/src/data/facultyMockData";
 import { COLORS, FONT_FAMILY, RADIUS, SPACING } from "@/src/theme";
 
 type FilterStatus = "all" | "in_progress" | "completed";
@@ -14,7 +14,9 @@ const FILTER_OPTIONS: { key: FilterStatus; label: string }[] = [
   { key: "completed", label: "Completed" },
 ];
 
-const INITIAL_TASKS: FacultyTaskListRecord[] = facultyTaskList;
+const INITIAL_TASKS: FacultyTaskListRecord[] = facultyTaskList.filter(
+  (task) => task.assignedFacultyId === loggedInFacultyId,
+);
 
 function getProgressColor(pct: number) {
   if (pct >= 90) return COLORS.success;
@@ -49,7 +51,7 @@ export default function FacultyTasks() {
           Faculty Tasks
         </Text>
         <Text color={COLORS.textSecondary} variant="body">
-          Track task completion progress across all assigned faculty.
+          Track tasks assigned to you by the admin team.
         </Text>
       </View>
 

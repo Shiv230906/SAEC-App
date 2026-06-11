@@ -1,68 +1,53 @@
 import { useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
-import { supabase } from "@/src/services/supabase";
-import { Button, Card, Input, Screen, Text } from "@/src/components/ui";
+import { ActionButton } from "@/src/components/dashboard";
+import { Card, Input, Screen, Text } from "@/src/components/ui";
+import {
+  recentAdminEvents,
+  type AdminEventRecord,
+} from "@/src/data/adminEventsMockData";
 import { COLORS, SPACING } from "@/src/theme";
 
 export default function AdminEvents() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
-  const [venue, setVenue] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [title, setTitle] = useState("Tech Symposium 2026");
+  const [description, setDescription] = useState(
+    "Inter-department technical talks and project demos.",
+  );
+  const [date, setDate] = useState("20-07-2026");
+  const [venue, setVenue] = useState("Main Auditorium");
+  const [events, setEvents] = useState<AdminEventRecord[]>(recentAdminEvents);
+  const [message, setMessage] = useState("");
 
-  const createEvent = async () => {
+  const createEvent = () => {
     if (!title.trim()) {
-      Alert.alert("Validation", "Event title is required.");
+      setMessage("Event title is required.");
       return;
     }
 
-    setSubmitting(true);
+    const newEvent: AdminEventRecord = {
+      createdTime: "Created just now",
+      date: date || "Date not set",
+      description,
+      id: `event-local-${Date.now()}`,
+      title: title.trim(),
+      venue: venue || "Venue not set",
+    };
 
-    try {
-      let isoDate: string | null = null;
-      if (date) {
-        const parts = date.split("-");
-        if (parts.length === 3) {
-          const day = parts[0].padStart(2, "0");
-          const month = parts[1].padStart(2, "0");
-          const year = parts[2];
-          isoDate = `${year}-${month}-${day}`;
-        }
-      }
-
-      const payload: Record<string, unknown> = {
-        title: title.trim(),
-        description: description.trim() || null,
-        venue: venue.trim() || null,
-      };
-      if (isoDate) {
-        payload.event_date = isoDate;
-      }
-
-      const { error } = await supabase.from("events").insert([payload]);
-
-      if (error) throw error;
-
-      Alert.alert("Success", `Event "${title}" created.`);
-      setTitle("");
-      setDescription("");
-      setDate("");
-      setVenue("");
-    } catch (error: any) {
-      const msg =
-        error?.response?.data?.message ??
-        error?.message ??
-        (typeof error === "string" ? error : JSON.stringify(error));
-      Alert.alert("Error", msg);
-    } finally {
-      setSubmitting(false);
-    }
+    setEvents((current) => [newEvent, ...current]);
+    setMessage(`Event "${title.trim()}" created locally.`);
+    setTitle("");
+    setDescription("");
+    setDate("");
+    setVenue("");
   };
 
   return (
-    <Screen scrollable contentContainerStyle={styles.container}>
+    <Screen
+      scrollable
+      contentContainerStyle={styles.container}
+      style={styles.screen}
+    >
       <View style={styles.header}>
         <Text variant="subHeading">Events</Text>
         <Text color={COLORS.textSecondary} variant="body">
@@ -112,12 +97,56 @@ export default function AdminEvents() {
           value={venue}
         />
 
-        <Button
-          loading={submitting}
-          onPress={createEvent}
-          title="Create Event"
-        />
+        <ActionButton onPress={createEvent} variant="navy">
+          Create Event
+        </ActionButton>
       </Card>
+
+      {message ? (
+        <Card style={styles.messageCard}>
+          <Text color={COLORS.success} variant="body">
+            {message}
+          </Text>
+        </Card>
+      ) : null}
+
+      <View style={styles.section}>
+        <Text variant="innerHeading">Recent Events</Text>
+
+        {events.map((event) => (
+          <Card key={event.id} style={styles.eventCard}>
+            <View style={styles.eventHeader}>
+              <View style={styles.eventCopy}>
+                <Text variant="body">{event.title}</Text>
+                <Text color={COLORS.textSecondary} variant="caption">
+                  {event.date} · {event.createdTime}
+                </Text>
+              </View>
+            </View>
+            <Text color={COLORS.textSecondary} variant="caption">
+              {event.venue}
+            </Text>
+            <Text color={COLORS.textSecondary} variant="body">
+              {event.description}
+            </Text>
+            <View style={styles.actionRow}>
+              <ActionButton variant="peach">View</ActionButton>
+              <ActionButton variant="peach">Edit</ActionButton>
+              <ActionButton
+                labelColor={COLORS.error}
+                onPress={() =>
+                  setEvents((current) =>
+                    current.filter((item) => item.id !== event.id),
+                  )
+                }
+                variant="link"
+              >
+                Delete
+              </ActionButton>
+            </View>
+          </Card>
+        ))}
+      </View>
     </Screen>
   );
 }
@@ -125,14 +154,39 @@ export default function AdminEvents() {
 const styles = StyleSheet.create({
   container: {
     gap: SPACING.lg,
+    paddingBottom: SPACING.xl,
   },
   descriptionInput: {
     minHeight: 100,
+  },
+  actionRow: {
+    flexDirection: "row",
+    gap: SPACING.sm,
+  },
+  eventCard: {
+    gap: SPACING.sm,
+  },
+  eventCopy: {
+    flex: 1,
+    gap: SPACING.xs,
+  },
+  eventHeader: {
+    flexDirection: "row",
   },
   formCard: {
     gap: SPACING.md,
   },
   header: {
     gap: SPACING.sm,
+  },
+  messageCard: {
+    backgroundColor: "#F0FDF4",
+    borderColor: "#BBF7D0",
+  },
+  screen: {
+    backgroundColor: COLORS.pageBackground,
+  },
+  section: {
+    gap: SPACING.md,
   },
 });

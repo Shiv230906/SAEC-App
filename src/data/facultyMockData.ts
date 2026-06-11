@@ -18,27 +18,30 @@ export type FacultyTaskPriority = "high" | "low" | "medium";
 export type FacultyTaskStatus = "ongoing" | "completed";
 
 export type FacultyPendingTask = {
+  assignedFacultyId: string;
   id: string;
   priority: FacultyTaskPriority;
   title: string;
 };
 
 export type FacultyAssignedTask = {
-  id: string;
   assignee: string;
+  assignedFacultyId: string;
   title: string;
   description: string;
   assignedBy: string;
   dueDate: string;
+  id: string;
   priority: FacultyTaskPriority;
   status: FacultyTaskStatus;
 };
 
 export type FacultyTaskListRecord = {
+  assignedFacultyId: string;
+  completion: number;
   id: string;
   name: string;
   task: string;
-  completion: number;
 };
 
 export type FacultyQuickStats = {
@@ -53,12 +56,6 @@ export type FacultySubjectAnalytics = {
   subjectCode: string;
   topScore: string;
   topStudent: string;
-};
-
-export type FacultyAttendanceSummary = {
-  classesToday: number;
-  completed: number;
-  pending: number;
 };
 
 export type FacultyAssignmentSummary = {
@@ -80,6 +77,8 @@ export const facultyProfile: FacultyProfile = {
   name: "Dr. John Doe",
 };
 
+export const loggedInFacultyId = "fac-john-doe";
+
 export const facultyNextClass: FacultyNextClass = {
   endTime: "12:00 PM",
   room: "302",
@@ -89,48 +88,86 @@ export const facultyNextClass: FacultyNextClass = {
 };
 
 export const facultyPendingTasks: FacultyPendingTask[] = [
-  { id: "task-1", priority: "high", title: "Upload Internal Marks" },
-  { id: "task-2", priority: "medium", title: "Verify Attendance Records" },
-  { id: "task-3", priority: "medium", title: "Submit Lab Assessment" },
-  { id: "task-4", priority: "high", title: "Review Project Reports" },
-  { id: "task-5", priority: "medium", title: "Grade Assignments" },
+  {
+    assignedFacultyId: "fac-john-doe",
+    id: "task-1",
+    priority: "high",
+    title: "Upload Internal Marks",
+  },
+  {
+    assignedFacultyId: "fac-john-doe",
+    id: "task-2",
+    priority: "medium",
+    title: "Verify Attendance",
+  },
+  {
+    assignedFacultyId: "fac-john-doe",
+    id: "task-3",
+    priority: "medium",
+    title: "Prepare Unit 3 Notes",
+  },
+  {
+    assignedFacultyId: "fac-meera-iyer",
+    id: "task-4",
+    priority: "high",
+    title: "Review Project Reports",
+  },
+  {
+    assignedFacultyId: "fac-ravi-kumar",
+    id: "task-5",
+    priority: "medium",
+    title: "Grade Assignments",
+  },
 ];
 
 export const facultyTaskList: FacultyTaskListRecord[] = [
   {
+    assignedFacultyId: "fac-john-doe",
+    completion: 100,
     id: "task-1",
     name: "Dr. John Doe",
     task: "Upload Internal Marks",
-    completion: 100,
   },
   {
+    assignedFacultyId: "fac-meera-iyer",
+    completion: 75,
     id: "task-2",
     name: "Dr. Meera Iyer",
     task: "Verify Attendance Records",
-    completion: 75,
   },
   {
+    assignedFacultyId: "fac-suresh-babu",
+    completion: 50,
     id: "task-3",
     name: "Prof. Suresh Babu",
     task: "Submit Lab Assessment",
-    completion: 50,
   },
   {
+    assignedFacultyId: "fac-anita-rao",
+    completion: 30,
     id: "task-4",
     name: "Dr. Anita Rao",
     task: "Review Project Reports",
-    completion: 30,
   },
   {
+    assignedFacultyId: "fac-ravi-kumar",
+    completion: 90,
     id: "task-5",
     name: "Prof. Ravi Kumar",
     task: "Grade Assignments",
-    completion: 90,
+  },
+  {
+    assignedFacultyId: "fac-john-doe",
+    completion: 40,
+    id: "task-6",
+    name: "Dr. John Doe",
+    task: "Prepare Unit 3 Notes",
   },
 ];
 
 export const facultyAssignedTasks: FacultyAssignedTask[] = [
   {
+    assignedFacultyId: "fac-john-doe",
     id: "task-1",
     assignee: "Dr. John Doe",
     title: "Upload Internal Marks",
@@ -141,7 +178,30 @@ export const facultyAssignedTasks: FacultyAssignedTask[] = [
     status: "ongoing",
   },
   {
+    assignedFacultyId: "fac-john-doe",
     id: "task-2",
+    assignee: "Dr. John Doe",
+    title: "Verify Attendance",
+    description: "Verify DBMS attendance records for CSE C before Friday",
+    assignedBy: "Academic Cell",
+    dueDate: "Jun 13, 2026",
+    priority: "medium",
+    status: "ongoing",
+  },
+  {
+    assignedFacultyId: "fac-john-doe",
+    id: "task-3",
+    assignee: "Dr. John Doe",
+    title: "Prepare Unit 3 Notes",
+    description: "Upload DBMS Unit 3 transaction management notes",
+    assignedBy: "HOD - CSE",
+    dueDate: "Jun 18, 2026",
+    priority: "medium",
+    status: "ongoing",
+  },
+  {
+    assignedFacultyId: "fac-meera-iyer",
+    id: "task-4",
     assignee: "Dr. Meera Iyer",
     title: "Verify Attendance Records",
     description: "Cross-check attendance data for May 2026 semester records",
@@ -151,7 +211,8 @@ export const facultyAssignedTasks: FacultyAssignedTask[] = [
     status: "ongoing",
   },
   {
-    id: "task-3",
+    assignedFacultyId: "fac-suresh-babu",
+    id: "task-5",
     assignee: "Prof. Suresh Babu",
     title: "Submit Lab Assessment",
     description: "Submit OS lab assessment scores for batches CSE A and CSE B",
@@ -161,7 +222,8 @@ export const facultyAssignedTasks: FacultyAssignedTask[] = [
     status: "ongoing",
   },
   {
-    id: "task-4",
+    assignedFacultyId: "fac-anita-rao",
+    id: "task-6",
     assignee: "Dr. Anita Rao",
     title: "Review Project Reports",
     description: "Review and grade final year project interim reports",
@@ -171,7 +233,8 @@ export const facultyAssignedTasks: FacultyAssignedTask[] = [
     status: "ongoing",
   },
   {
-    id: "task-5",
+    assignedFacultyId: "fac-ravi-kumar",
+    id: "task-7",
     assignee: "Prof. Ravi Kumar",
     title: "Grade Assignments",
     description: "Grade CN Unit 3 assignments for all sections",
@@ -213,12 +276,6 @@ export const facultySubjectAnalytics: FacultySubjectAnalytics[] = [
     topStudent: "Meera Joshi",
   },
 ];
-
-export const facultyAttendanceSummary: FacultyAttendanceSummary = {
-  classesToday: 3,
-  completed: 2,
-  pending: 1,
-};
 
 export const facultyAssignmentSummary: FacultyAssignmentSummary = {
   newSubmissions: 7,
