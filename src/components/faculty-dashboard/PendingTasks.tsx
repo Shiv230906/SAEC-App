@@ -8,6 +8,7 @@ import {
   dashboardStyles,
 } from "@/src/components/dashboard";
 import { Text } from "@/src/components/ui";
+import { ROUTES } from "@/src/constants/routes";
 import {
   facultyPendingTasks,
   getTaskPriorityColor,
@@ -35,10 +36,10 @@ export default function PendingTasks() {
       </View>
 
       <ActionButton
-        onPress={() => router.push("/(faculty)/tasks")}
+        onPress={() => router.push(ROUTES.FACULTY_TASKS)}
         variant="peach"
       >
-        View All
+        View Task
       </ActionButton>
     </DashboardCard>
   );

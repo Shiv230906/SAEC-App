@@ -15,10 +15,30 @@ export type FacultyNextClass = {
 
 export type FacultyTaskPriority = "high" | "low" | "medium";
 
+export type FacultyTaskStatus = "ongoing" | "completed";
+
 export type FacultyPendingTask = {
   id: string;
   priority: FacultyTaskPriority;
   title: string;
+};
+
+export type FacultyAssignedTask = {
+  id: string;
+  assignee: string;
+  title: string;
+  description: string;
+  assignedBy: string;
+  dueDate: string;
+  priority: FacultyTaskPriority;
+  status: FacultyTaskStatus;
+};
+
+export type FacultyTaskListRecord = {
+  id: string;
+  name: string;
+  task: string;
+  completion: number;
 };
 
 export type FacultyQuickStats = {
@@ -70,10 +90,96 @@ export const facultyNextClass: FacultyNextClass = {
 
 export const facultyPendingTasks: FacultyPendingTask[] = [
   { id: "task-1", priority: "high", title: "Upload Internal Marks" },
-  { id: "task-2", priority: "medium", title: "Verify Attendance" },
-  { id: "task-3", priority: "low", title: "Submit Course Plan" },
-  { id: "task-4", priority: "medium", title: "Review Lab Reports" },
-  { id: "task-5", priority: "high", title: "Approve Project Topics" },
+  { id: "task-2", priority: "medium", title: "Verify Attendance Records" },
+  { id: "task-3", priority: "medium", title: "Submit Lab Assessment" },
+  { id: "task-4", priority: "high", title: "Review Project Reports" },
+  { id: "task-5", priority: "medium", title: "Grade Assignments" },
+];
+
+export const facultyTaskList: FacultyTaskListRecord[] = [
+  {
+    id: "task-1",
+    name: "Dr. John Doe",
+    task: "Upload Internal Marks",
+    completion: 100,
+  },
+  {
+    id: "task-2",
+    name: "Dr. Meera Iyer",
+    task: "Verify Attendance Records",
+    completion: 75,
+  },
+  {
+    id: "task-3",
+    name: "Prof. Suresh Babu",
+    task: "Submit Lab Assessment",
+    completion: 50,
+  },
+  {
+    id: "task-4",
+    name: "Dr. Anita Rao",
+    task: "Review Project Reports",
+    completion: 30,
+  },
+  {
+    id: "task-5",
+    name: "Prof. Ravi Kumar",
+    task: "Grade Assignments",
+    completion: 90,
+  },
+];
+
+export const facultyAssignedTasks: FacultyAssignedTask[] = [
+  {
+    id: "task-1",
+    assignee: "Dr. John Doe",
+    title: "Upload Internal Marks",
+    description: "Upload DBMS internal test 1 marks for CSE A, B, C sections",
+    assignedBy: "Admin Office",
+    dueDate: "Jun 15, 2026",
+    priority: "high",
+    status: "ongoing",
+  },
+  {
+    id: "task-2",
+    assignee: "Dr. Meera Iyer",
+    title: "Verify Attendance Records",
+    description: "Cross-check attendance data for May 2026 semester records",
+    assignedBy: "HOD - CSE",
+    dueDate: "Jun 12, 2026",
+    priority: "medium",
+    status: "ongoing",
+  },
+  {
+    id: "task-3",
+    assignee: "Prof. Suresh Babu",
+    title: "Submit Lab Assessment",
+    description: "Submit OS lab assessment scores for batches CSE A and CSE B",
+    assignedBy: "Exam Cell",
+    dueDate: "Jun 14, 2026",
+    priority: "medium",
+    status: "ongoing",
+  },
+  {
+    id: "task-4",
+    assignee: "Dr. Anita Rao",
+    title: "Review Project Reports",
+    description: "Review and grade final year project interim reports",
+    assignedBy: "Project Coordinator",
+    dueDate: "Jun 18, 2026",
+    priority: "high",
+    status: "ongoing",
+  },
+  {
+    id: "task-5",
+    assignee: "Prof. Ravi Kumar",
+    title: "Grade Assignments",
+    description: "Grade CN Unit 3 assignments for all sections",
+    assignedBy: "Admin Office",
+    dueDate: "Jun 8, 2026",
+    priority: "medium",
+    status: "completed",
+  },
 ];
 
 export const facultyQuickStats: FacultyQuickStats = {

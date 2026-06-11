@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
 import {
@@ -81,7 +82,17 @@ export default function ActionRequired() {
         })}
       </View>
 
-      <ActionButton variant="navy">Review All</ActionButton>
+      <ActionButton
+        onPress={() =>
+          router.push({
+            pathname: "/(admin)/action-required",
+            params: { refresh: String(Date.now()) },
+          })
+        }
+        variant="navy"
+      >
+        Review All
+      </ActionButton>
     </DashboardCard>
   );
 }

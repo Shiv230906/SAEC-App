@@ -100,6 +100,7 @@ export default function AdminLayout() {
         name="reports"
         options={tabOptions("Tasks", MarksIcon)}
       />
+      <Tabs.Screen name="action-required" options={{ href: null }} />
       <Tabs.Screen name="courses" options={{ href: null }} />
       <Tabs.Screen name="departments" options={{ href: null }} />
       <Tabs.Screen name="internal-marks" options={{ href: null }} />
