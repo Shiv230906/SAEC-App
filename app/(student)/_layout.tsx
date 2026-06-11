@@ -50,7 +50,7 @@ export default function StudentLayout() {
           backgroundColor: COLORS.background,
           borderTopColor: COLORS.primaryLight,
           borderTopWidth: 1,
-          height: 52 + tabBarBottomInset,
+          height: 56 + tabBarBottomInset,
           paddingBottom: tabBarBottomInset,
           paddingTop: SPACING.xs,
           ...Platform.select({
@@ -98,6 +98,10 @@ export default function StudentLayout() {
       />
       <Tabs.Screen
         name="settings"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="notices"
         options={{ href: null }}
       />
     </Tabs>

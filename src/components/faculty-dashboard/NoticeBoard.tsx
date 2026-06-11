@@ -36,7 +36,7 @@ export default function NoticeBoard() {
 
       <ActionButton
         onPress={() => router.push("/(faculty)/notices")}
-        variant="navy"
+        variant="peach"
       >
         Create Notice
       </ActionButton>

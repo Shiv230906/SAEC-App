@@ -138,7 +138,7 @@ export const facultyMembers: FacultyMember[] = [
     avatarInitials: "JD",
     department: "Computer Science",
     id: "fac-001",
-    name: "Dr. John Doe",
+    name: "Mr. Bala",
     subjects: [
       { section: "CSE C", subject: "DBMS" },
       { section: "CSE A", subject: "Operating Systems" },

@@ -22,7 +22,7 @@ export const facultyNotesInitial: FacultyNoteMaterial[] = [
   {
     className: "CSE C",
     description: "Unit 2 notes covering normal forms and decomposition.",
-    facultyName: "Dr. John Doe",
+    facultyName: "Mr. Bala",
     fileName: "normalization.pdf",
     fileType: "PDF",
     id: "note-1",
@@ -33,7 +33,7 @@ export const facultyNotesInitial: FacultyNoteMaterial[] = [
   {
     className: "CSE C",
     description: "Transaction states, ACID properties, and schedules.",
-    facultyName: "Dr. John Doe",
+    facultyName: "Mr. Bala",
     fileName: "dbms-transactions.pdf",
     fileType: "PDF",
     id: "note-2",
@@ -44,7 +44,7 @@ export const facultyNotesInitial: FacultyNoteMaterial[] = [
   {
     className: "CSE A",
     description: "CPU scheduling and process synchronization slides.",
-    facultyName: "Dr. John Doe",
+    facultyName: "Mr. Bala",
     fileName: "os-unit-3.ppt",
     fileType: "PPT",
     id: "note-3",
@@ -55,7 +55,7 @@ export const facultyNotesInitial: FacultyNoteMaterial[] = [
   {
     className: "CSE B",
     description: "Routing basics and subnetting practice problems.",
-    facultyName: "Dr. John Doe",
+    facultyName: "Mr. Bala",
     fileName: "cn-routing.pdf",
     fileType: "PDF",
     id: "note-4",

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
+import { router } from "expo-router";
 
 import {
   ActionButton,
@@ -71,7 +72,9 @@ export default function SubjectPerformance() {
         </View>
       </View>
 
-      <ActionButton variant="peach">View Top 5 & Bottom 5</ActionButton>
+      <ActionButton onPress={() => router.push("/(faculty)/performance")} variant="peach">
+        View Performance
+      </ActionButton>
     </DashboardCard>
   );
 }

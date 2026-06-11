@@ -61,10 +61,7 @@ function AppStack() {
       <Stack.Screen
         name="(student)"
         options={{
-          headerStyle: styles.studentHeader,
-          headerTitle: () => (
-            <ProfileHeader role="student" variant="light" />
-          ),
+          headerTitle: () => <ProfileHeader role="student" />,
           title: "",
         }}
       />
@@ -89,9 +86,6 @@ function AppStack() {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: COLORS.background,
-  },
-  studentHeader: {
-    backgroundColor: COLORS.navyDark,
   },
   loadingContainer: {
     alignItems: "center",

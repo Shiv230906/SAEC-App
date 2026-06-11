@@ -191,11 +191,11 @@ function PerformanceSection() {
         accessibilityRole="button"
         onPress={() => router.push("/(student)/internal-marks")}
         style={({ pressed }) => [
-          styles.blueButton,
+          styles.peachButton,
           pressed ? styles.pressed : undefined,
         ]}
       >
-        <Text color={COLORS.navy} style={styles.buttonLabel}>
+        <Text color={COLORS.linkAccent} style={styles.buttonLabel}>
           Detailed Analysis
         </Text>
       </Pressable>
@@ -380,13 +380,12 @@ function AssignmentsSection() {
       <Pressable
         accessibilityRole="button"
         onPress={() => router.push("/(student)/assignments")}
-        style={({ pressed }) => [pressed ? styles.pressed : undefined]}
+        style={({ pressed }) => [
+          styles.peachButton,
+          pressed ? styles.pressed : undefined,
+        ]}
       >
-        <Text
-          color={COLORS.linkAccent}
-          style={styles.linkLabel}
-          variant="body"
-        >
+        <Text color={COLORS.linkAccent} style={styles.buttonLabel}>
           View All Assignments
         </Text>
       </Pressable>
@@ -419,10 +418,13 @@ function NoticeBoardSection() {
 
       <Pressable
         accessibilityRole="button"
-        onPress={() => router.push("/(student)/notes")}
-        style={({ pressed }) => [pressed ? styles.pressed : undefined]}
+        onPress={() => router.push("/(student)/notices")}
+        style={({ pressed }) => [
+          styles.peachButton,
+          pressed ? styles.pressed : undefined,
+        ]}
       >
-        <Text color={COLORS.linkAccent} style={styles.linkLabel} variant="body">
+        <Text color={COLORS.linkAccent} style={styles.buttonLabel}>
           View All Notices
         </Text>
       </Pressable>
@@ -523,7 +525,7 @@ const styles = StyleSheet.create({
     paddingBottom: SPACING.xl,
   },
   currentClassCard: {
-    backgroundColor: COLORS.navyDark,
+    backgroundColor: COLORS.navy,
     borderRadius: 20,
     boxShadow: `0 4px 12px ${COLORS.shadow}`,
     gap: SPACING.md,

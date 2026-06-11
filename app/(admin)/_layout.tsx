@@ -93,14 +93,13 @@ export default function AdminLayout() {
         options={tabOptions("Events", EventsIcon)}
       />
       <Tabs.Screen
-        name="users"
-        options={tabOptions("Users", ProfileIcon)}
-      />
-      <Tabs.Screen
         name="reports"
         options={tabOptions("Tasks", MarksIcon)}
       />
-      <Tabs.Screen name="action-required" options={{ href: null }} />
+      <Tabs.Screen
+        name="users"
+        options={tabOptions("Users", ProfileIcon)}
+      />
       <Tabs.Screen name="courses" options={{ href: null }} />
       <Tabs.Screen name="departments" options={{ href: null }} />
       <Tabs.Screen name="internal-marks" options={{ href: null }} />

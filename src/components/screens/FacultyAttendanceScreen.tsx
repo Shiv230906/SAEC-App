@@ -140,19 +140,19 @@ export function FacultyAttendanceScreen() {
         <View style={styles.metaGrid}>
           <View style={styles.metaItem}>
             <MaterialIcons color={COLORS.primary} name="event" size={18} />
-            <Text color={COLORS.white} variant="caption">
+            <Text color={COLORS.accentBlueMuted} variant="caption">
               {formatAttendanceDate()}
             </Text>
           </View>
           <View style={styles.metaItem}>
             <MaterialIcons color={COLORS.primary} name="schedule" size={18} />
-            <Text color={COLORS.white} variant="caption">
+            <Text color={COLORS.accentBlueMuted} variant="caption">
               {currentClass.startTime} – {currentClass.endTime}
             </Text>
           </View>
           <View style={styles.metaItem}>
             <MaterialIcons color={COLORS.primary} name="meeting-room" size={18} />
-            <Text color={COLORS.white} variant="caption">
+            <Text color={COLORS.accentBlueMuted} variant="caption">
               Room {currentClass.room}
             </Text>
           </View>
@@ -197,7 +197,7 @@ export function FacultyAttendanceScreen() {
             </Text>
           </View>
 
-          <ActionButton onPress={handleSave} variant="navy">
+          <ActionButton onPress={handleSave} variant="peach">
             Save Attendance
           </ActionButton>
         </>
@@ -208,15 +208,13 @@ export function FacultyAttendanceScreen() {
 
 const styles = StyleSheet.create({
   classCard: {
-    backgroundColor: COLORS.navyDark,
-    borderColor: COLORS.navy,
+    backgroundColor: COLORS.navy,
     borderRadius: 20,
-    borderWidth: 1,
     gap: SPACING.md,
     padding: SPACING.lg,
     shadowColor: COLORS.black,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 6,
   },

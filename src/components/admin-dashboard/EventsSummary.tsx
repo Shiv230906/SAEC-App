@@ -35,7 +35,7 @@ export default function EventsSummary() {
 
       <ActionButton
         onPress={() => router.push("/(admin)/events")}
-        variant="navy"
+        variant="peach"
       >
         Create Event
       </ActionButton>

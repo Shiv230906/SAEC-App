@@ -37,7 +37,7 @@ export default function AdminAssignTask() {
     };
 
     setTasks((current) => [newTask, ...current]);
-    setMessage(`Task assigned to ${assignee.trim()} locally.`);
+    setMessage(`Task assigned to ${assignee.trim()}.`);
     setTaskTitle("");
     setAssignee("");
     setDueDate("");
@@ -70,7 +70,7 @@ export default function AdminAssignTask() {
         <Input
           label="Assign To"
           onChangeText={setAssignee}
-          placeholder="Dr. John Doe"
+          placeholder="Mr. Bala"
           value={assignee}
         />
 
@@ -134,7 +134,7 @@ export default function AdminAssignTask() {
           </View>
         </View>
 
-        <ActionButton onPress={assignTask} variant="navy">
+        <ActionButton onPress={assignTask} variant="peach">
           Assign Task
         </ActionButton>
       </Card>

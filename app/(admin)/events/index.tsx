@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 
 import { ActionButton } from "@/src/components/dashboard";
 import { Card, Input, Screen, Text } from "@/src/components/ui";
@@ -7,7 +7,7 @@ import {
   recentAdminEvents,
   type AdminEventRecord,
 } from "@/src/data/adminEventsMockData";
-import { COLORS, SPACING } from "@/src/theme";
+import { COLORS, RADIUS, SPACING } from "@/src/theme";
 
 export default function AdminEvents() {
   const [title, setTitle] = useState("Tech Symposium 2026");
@@ -35,7 +35,7 @@ export default function AdminEvents() {
     };
 
     setEvents((current) => [newEvent, ...current]);
-    setMessage(`Event "${title.trim()}" created locally.`);
+    setMessage(`Event "${title.trim()}" created.`);
     setTitle("");
     setDescription("");
     setDate("");
@@ -97,7 +97,7 @@ export default function AdminEvents() {
           value={venue}
         />
 
-        <ActionButton onPress={createEvent} variant="navy">
+        <ActionButton onPress={createEvent} variant="peach">
           Create Event
         </ActionButton>
       </Card>
@@ -114,7 +114,7 @@ export default function AdminEvents() {
         <Text variant="innerHeading">Recent Events</Text>
 
         {events.map((event) => (
-          <Card key={event.id} style={styles.eventCard}>
+          <View key={event.id} style={styles.eventCard}>
             <View style={styles.eventHeader}>
               <View style={styles.eventCopy}>
                 <Text variant="body">{event.title}</Text>
@@ -133,18 +133,31 @@ export default function AdminEvents() {
               <ActionButton variant="peach">View</ActionButton>
               <ActionButton variant="peach">Edit</ActionButton>
               <ActionButton
-                labelColor={COLORS.error}
+                labelColor={COLORS.white}
+                style={styles.deleteButton}
                 onPress={() =>
-                  setEvents((current) =>
-                    current.filter((item) => item.id !== event.id),
+                  Alert.alert(
+                    "Delete Event",
+                    "Are you sure you want to delete this event? This action cannot be undone.",
+                    [
+                      { text: "Cancel", style: "cancel" },
+                      {
+                        text: "Delete",
+                        style: "destructive",
+                        onPress: () =>
+                          setEvents((current) =>
+                            current.filter((item) => item.id !== event.id),
+                          ),
+                      },
+                    ],
                   )
                 }
-                variant="link"
+                variant="peach"
               >
                 Delete
               </ActionButton>
             </View>
-          </Card>
+          </View>
         ))}
       </View>
     </Screen>
@@ -160,11 +173,18 @@ const styles = StyleSheet.create({
     minHeight: 100,
   },
   actionRow: {
+    alignItems: "center",
     flexDirection: "row",
     gap: SPACING.sm,
   },
+  deleteButton: {
+    backgroundColor: COLORS.error,
+  },
   eventCard: {
+    backgroundColor: COLORS.accentBlue,
+    borderRadius: RADIUS.lg,
     gap: SPACING.sm,
+    padding: SPACING.md,
   },
   eventCopy: {
     flex: 1,

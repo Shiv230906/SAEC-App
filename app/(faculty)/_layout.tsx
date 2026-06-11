@@ -112,6 +112,10 @@ export default function FacultyLayout() {
         name="account"
         options={{ href: null }}
       />
+      <Tabs.Screen
+        name="performance"
+        options={{ href: null }}
+      />
     </Tabs>
   );
 }

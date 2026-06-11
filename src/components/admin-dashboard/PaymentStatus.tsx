@@ -52,7 +52,7 @@ export default function PaymentStatus() {
 
       <ActionButton
         onPress={() => router.push("/(admin)/payments")}
-        variant="navy"
+        variant="peach"
       >
         Manage Payments
       </ActionButton>

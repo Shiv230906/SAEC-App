@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, Pressable, StyleSheet, View } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import * as DocumentPicker from "expo-document-picker";
 
 import { ActionButton } from "@/src/components/dashboard";
 import { Card, Input, Screen, Text } from "@/src/components/ui";
@@ -7,7 +9,7 @@ import {
   recentlyUploadedAssignments,
   type FacultyUploadedAssignment,
 } from "@/src/data/facultyAssignmentsMockData";
-import { COLORS, SPACING } from "@/src/theme";
+import { COLORS, RADIUS, SPACING } from "@/src/theme";
 
 export default function FacultyAssignments() {
   const [title, setTitle] = useState("DBMS Assignment 3");
@@ -17,7 +19,7 @@ export default function FacultyAssignments() {
   const [subject, setSubject] = useState("DBMS");
   const [className, setClassName] = useState("CSE C");
   const [dueDate, setDueDate] = useState("20-06-2026");
-  const [mockFile, setMockFile] = useState("dbms-assignment-3.pdf");
+  const [pickedFile, setPickedFile] = useState<{ name: string; uri: string } | null>(null);
   const [assignments, setAssignments] = useState<FacultyUploadedAssignment[]>(
     recentlyUploadedAssignments,
   );
@@ -38,11 +40,22 @@ export default function FacultyAssignments() {
     };
 
     setAssignments((current) => [newAssignment, ...current]);
-    setMessage(`Assignment "${title.trim()}" uploaded locally.`);
+    setMessage(`Assignment "${title.trim()}" uploaded.`);
     setTitle("");
     setDescription("");
     setDueDate("");
-    setMockFile("assignment.pdf");
+    setPickedFile(null);
+  };
+
+  const pickDocument = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
+      copyToCacheDirectory: true,
+    });
+
+    if (!result.canceled && result.assets?.[0]) {
+      setPickedFile({ name: result.assets[0].name, uri: result.assets[0].uri });
+    }
   };
 
   return (
@@ -111,14 +124,27 @@ export default function FacultyAssignments() {
           value={dueDate}
         />
 
-        <Input
-          label="Mock File"
-          onChangeText={setMockFile}
-          placeholder="assignment.pdf"
-          value={mockFile}
-        />
+        <View style={styles.fileSection}>
+          <Text color={COLORS.textSecondary} variant="caption">
+            Attachment
+          </Text>
+          <Pressable onPress={pickDocument} style={styles.filePicker}>
+            <MaterialIcons
+              color={pickedFile ? COLORS.success : COLORS.primary}
+              name={pickedFile ? "check-circle" : "upload-file"}
+              size={22}
+            />
+            <Text
+              color={pickedFile ? COLORS.textPrimary : COLORS.textSecondary}
+              variant="body"
+              numberOfLines={1}
+            >
+              {pickedFile ? pickedFile.name : "Upload PDF or Document"}
+            </Text>
+          </Pressable>
+        </View>
 
-        <ActionButton onPress={createAssignment} variant="navy">
+        <ActionButton onPress={createAssignment} variant="peach">
           Create Assignment
         </ActionButton>
       </Card>
@@ -138,7 +164,7 @@ export default function FacultyAssignments() {
         <Text variant="innerHeading">Recently Uploaded Assignments</Text>
 
         {assignments.map((assignment) => (
-          <Card key={assignment.id} style={styles.assignmentCard}>
+          <View key={assignment.id} style={styles.assignmentCard}>
             <View style={styles.assignmentHeader}>
               <View style={styles.assignmentCopy}>
                 <Text variant="body">{assignment.title}</Text>
@@ -154,18 +180,31 @@ export default function FacultyAssignments() {
               <ActionButton variant="peach">View</ActionButton>
               <ActionButton variant="peach">Edit</ActionButton>
               <ActionButton
-                labelColor={COLORS.error}
+                labelColor={COLORS.white}
+                style={styles.deleteButton}
                 onPress={() =>
-                  setAssignments((current) =>
-                    current.filter((item) => item.id !== assignment.id),
+                  Alert.alert(
+                    "Delete Assignment",
+                    "Are you sure you want to delete this assignment? This action cannot be undone.",
+                    [
+                      { text: "Cancel", style: "cancel" },
+                      {
+                        text: "Delete",
+                        style: "destructive",
+                        onPress: () =>
+                          setAssignments((current) =>
+                            current.filter((item) => item.id !== assignment.id),
+                          ),
+                      },
+                    ],
                   )
                 }
-                variant="link"
+                variant="peach"
               >
                 Delete
               </ActionButton>
             </View>
-          </Card>
+          </View>
         ))}
       </View>
     </Screen>
@@ -174,11 +213,18 @@ export default function FacultyAssignments() {
 
 const styles = StyleSheet.create({
   actionRow: {
+    alignItems: "center",
     flexDirection: "row",
     gap: SPACING.sm,
   },
   assignmentCard: {
+    backgroundColor: COLORS.accentBlue,
+    borderRadius: RADIUS.lg,
     gap: SPACING.md,
+    padding: SPACING.md,
+  },
+  deleteButton: {
+    backgroundColor: COLORS.error,
   },
   assignmentCopy: {
     flex: 1,
@@ -193,6 +239,20 @@ const styles = StyleSheet.create({
   },
   descriptionInput: {
     minHeight: 112,
+  },
+  filePicker: {
+    alignItems: "center",
+    borderColor: COLORS.border,
+    borderRadius: RADIUS.md,
+    borderStyle: "dashed",
+    borderWidth: 1.5,
+    flexDirection: "row",
+    gap: SPACING.sm,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.md,
+  },
+  fileSection: {
+    gap: SPACING.xs,
   },
   formCard: {
     gap: SPACING.md,

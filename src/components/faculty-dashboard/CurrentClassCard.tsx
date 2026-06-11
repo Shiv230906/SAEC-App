@@ -34,13 +34,13 @@ export default function CurrentClassCard() {
         {facultyCurrentClass.subject}
       </Text>
 
-      <Text color={COLORS.white} variant="body">
+      <Text color={COLORS.accentBlueMuted} variant="body">
         {facultyCurrentClass.section}
       </Text>
 
       <View style={styles.metaRow}>
-        <MaterialIcons color={COLORS.white} name="schedule" size={16} />
-        <Text color={COLORS.white} variant="body">
+        <MaterialIcons color={COLORS.accentBlueMuted} name="schedule" size={16} />
+        <Text color={COLORS.accentBlueMuted} variant="body">
           {timeRange}
         </Text>
       </View>
@@ -48,7 +48,7 @@ export default function CurrentClassCard() {
       <ActionButton
         onPress={() => router.push("/(faculty)/attendance")}
         style={styles.button}
-        variant="navy"
+        variant="peach"
       >
         Take Attendance
       </ActionButton>

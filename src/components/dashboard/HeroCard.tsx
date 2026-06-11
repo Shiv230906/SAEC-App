@@ -14,7 +14,7 @@ export function HeroCard({ children, style }: HeroCardProps) {
 
 const styles = StyleSheet.create({
   heroCard: {
-    backgroundColor: COLORS.navyDark,
+    backgroundColor: COLORS.navy,
     borderRadius: 20,
     boxShadow: `0 4px 12px ${COLORS.shadow}`,
     gap: SPACING.sm,

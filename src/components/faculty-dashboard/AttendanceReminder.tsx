@@ -25,8 +25,10 @@ export default function AttendanceReminder() {
         </Text>
       </View>
       <ActionButton
+        labelColor={COLORS.white}
         onPress={() => router.push("/(faculty)/attendance")}
-        variant="navy"
+        style={styles.button}
+        variant="peach"
       >
         Take Attendance
       </ActionButton>
@@ -35,6 +37,9 @@ export default function AttendanceReminder() {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: COLORS.primary,
+  },
   card: {
     backgroundColor: COLORS.primaryLight,
     borderColor: COLORS.primary,

@@ -37,8 +37,14 @@ function filterTasks(tasks: FacultyTaskListRecord[], filterStatus: FilterStatus)
 }
 
 export default function FacultyTasks() {
-  const [tasks] = useState<FacultyTaskListRecord[]>(INITIAL_TASKS);
+  const [tasks, setTasks] = useState<FacultyTaskListRecord[]>(INITIAL_TASKS);
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
+
+  const updateTaskStatus = (taskId: string, completion: number) => {
+    setTasks((current) =>
+      current.map((t) => (t.id === taskId ? { ...t, completion } : t)),
+    );
+  };
 
   const filteredTasks = filterTasks(tasks, filterStatus);
   const inProgressCount = tasks.filter((task) => task.completion < 100).length;
@@ -134,6 +140,51 @@ export default function FacultyTasks() {
                   {task.completion}%
                 </Text>
               </View>
+
+              <View style={styles.statusRow}>
+                <Pressable
+                  onPress={() => updateTaskStatus(task.id, 25)}
+                  style={[
+                    styles.statusBtn,
+                    task.completion > 0 && task.completion < 50 ? styles.statusBtnActive : undefined,
+                  ]}
+                >
+                  <Text
+                    color={task.completion > 0 && task.completion < 50 ? COLORS.white : COLORS.linkAccent}
+                    variant="caption"
+                  >
+                    Pending
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => updateTaskStatus(task.id, 50)}
+                  style={[
+                    styles.statusBtn,
+                    task.completion >= 50 && task.completion < 100 ? styles.statusBtnOngoing : undefined,
+                  ]}
+                >
+                  <Text
+                    color={task.completion >= 50 && task.completion < 100 ? COLORS.white : COLORS.warning}
+                    variant="caption"
+                  >
+                    Ongoing
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => updateTaskStatus(task.id, 100)}
+                  style={[
+                    styles.statusBtn,
+                    task.completion === 100 ? styles.statusBtnDone : undefined,
+                  ]}
+                >
+                  <Text
+                    color={task.completion === 100 ? COLORS.white : COLORS.success}
+                    variant="caption"
+                  >
+                    Done
+                  </Text>
+                </Pressable>
+              </View>
             </Card>
           );
         })}
@@ -196,6 +247,31 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.md,
   },
   statsRow: {
+    flexDirection: "row",
+    gap: SPACING.sm,
+  },
+  statusBtn: {
+    borderColor: COLORS.border,
+    borderRadius: RADIUS.pill,
+    borderWidth: 1,
+    flex: 1,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.xs + 2,
+    alignItems: "center",
+  },
+  statusBtnActive: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
+  statusBtnDone: {
+    backgroundColor: COLORS.success,
+    borderColor: COLORS.success,
+  },
+  statusBtnOngoing: {
+    backgroundColor: COLORS.warning,
+    borderColor: COLORS.warning,
+  },
+  statusRow: {
     flexDirection: "row",
     gap: SPACING.sm,
   },

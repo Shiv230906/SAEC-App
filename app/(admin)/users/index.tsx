@@ -49,7 +49,7 @@ const SEED_USERS: UserRecord[] = [
   { id: "seed-s3", full_name: "Arjun Patel", role: "student", department: "Electronics" },
   { id: "seed-s4", full_name: "Meera Joshi", role: "student", department: "Mechanical" },
   { id: "seed-s5", full_name: "Kiran Kumar", role: "student", department: "Computer Science" },
-  { id: "seed-f1", full_name: "Dr. John Doe", role: "faculty", department: "Computer Science" },
+  { id: "seed-f1", full_name: "Mr. Bala", role: "faculty", department: "Computer Science" },
   { id: "seed-f2", full_name: "Dr. Meera Iyer", role: "faculty", department: "Computer Science" },
   { id: "seed-f3", full_name: "Prof. Suresh Babu", role: "faculty", department: "Electronics" },
   { id: "seed-f4", full_name: "Dr. Anita Rao", role: "faculty", department: "Mechanical" },
@@ -314,7 +314,7 @@ function AdminUsersPanel({ session }: { session: any }) {
               style={styles.tabText}
               variant="caption"
             >
-              {r.charAt(0).toUpperCase() + r.slice(1)}s
+              {r === "student" ? "Students" : r === "faculty" ? "Faculty" : "Admin"}
             </Text>
           </Pressable>
         ))}

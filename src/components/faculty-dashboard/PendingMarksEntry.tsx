@@ -32,7 +32,7 @@ export default function PendingMarksEntry() {
 
       <ActionButton
         onPress={() => router.push("/(faculty)/internal-marks")}
-        variant="navy"
+        variant="peach"
       >
         Enter Marks
       </ActionButton>

@@ -17,7 +17,7 @@ export const facultyTaskChecklist: {
   taskTitle: string;
 }[] = [
   {
-    facultyName: "Dr. John Doe",
+    facultyName: "Mr. Bala",
     id: "check-1",
     status: "completed",
     taskTitle: "Upload Internal Marks",
@@ -38,7 +38,7 @@ export const facultyTaskChecklist: {
 
 export const recentlyAssignedTasks: AdminAssignedTask[] = [
   {
-    assignedFaculty: "Dr. John Doe",
+    assignedFaculty: "Mr. Bala",
     dueDate: "20-06-2026",
     id: "task-1",
     priority: "high",

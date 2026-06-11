@@ -35,7 +35,7 @@ export default function AssignmentOverview() {
 
       <ActionButton
         onPress={() => router.push("/(faculty)/assignments")}
-        variant="navy"
+        variant="peach"
       >
         Review Assignments
       </ActionButton>

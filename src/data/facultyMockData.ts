@@ -74,7 +74,7 @@ export const facultyProfile: FacultyProfile = {
   avatarInitials: "JD",
   department: "Computer Science",
   greeting: "Good Morning ☀️",
-  name: "Dr. John Doe",
+  name: "Mr. Bala",
 };
 
 export const loggedInFacultyId = "fac-john-doe";
@@ -125,7 +125,7 @@ export const facultyTaskList: FacultyTaskListRecord[] = [
     assignedFacultyId: "fac-john-doe",
     completion: 100,
     id: "task-1",
-    name: "Dr. John Doe",
+    name: "Mr. Bala",
     task: "Upload Internal Marks",
   },
   {
@@ -160,7 +160,7 @@ export const facultyTaskList: FacultyTaskListRecord[] = [
     assignedFacultyId: "fac-john-doe",
     completion: 40,
     id: "task-6",
-    name: "Dr. John Doe",
+    name: "Mr. Bala",
     task: "Prepare Unit 3 Notes",
   },
 ];
@@ -169,7 +169,7 @@ export const facultyAssignedTasks: FacultyAssignedTask[] = [
   {
     assignedFacultyId: "fac-john-doe",
     id: "task-1",
-    assignee: "Dr. John Doe",
+    assignee: "Mr. Bala",
     title: "Upload Internal Marks",
     description: "Upload DBMS internal test 1 marks for CSE A, B, C sections",
     assignedBy: "Admin Office",
@@ -180,7 +180,7 @@ export const facultyAssignedTasks: FacultyAssignedTask[] = [
   {
     assignedFacultyId: "fac-john-doe",
     id: "task-2",
-    assignee: "Dr. John Doe",
+    assignee: "Mr. Bala",
     title: "Verify Attendance",
     description: "Verify DBMS attendance records for CSE C before Friday",
     assignedBy: "Academic Cell",
@@ -191,7 +191,7 @@ export const facultyAssignedTasks: FacultyAssignedTask[] = [
   {
     assignedFacultyId: "fac-john-doe",
     id: "task-3",
-    assignee: "Dr. John Doe",
+    assignee: "Mr. Bala",
     title: "Prepare Unit 3 Notes",
     description: "Upload DBMS Unit 3 transaction management notes",
     assignedBy: "HOD - CSE",

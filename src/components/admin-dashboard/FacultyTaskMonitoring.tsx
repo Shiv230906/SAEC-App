@@ -65,7 +65,7 @@ export default function FacultyTaskMonitoring() {
       </View>
 
       <ActionButton onPress={() => router.push("/(admin)/reports")} variant="peach">
-        View Tasks
+        Manage Tasks
       </ActionButton>
     </DashboardCard>
   );

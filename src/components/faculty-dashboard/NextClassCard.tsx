@@ -25,15 +25,15 @@ export default function NextClassCard() {
       </Text>
 
       <View style={styles.metaRow}>
-        <MaterialIcons color={COLORS.white} name="meeting-room" size={16} />
-        <Text color={COLORS.white} variant="body">
+        <MaterialIcons color={COLORS.accentBlueMuted} name="meeting-room" size={16} />
+        <Text color={COLORS.accentBlueMuted} variant="body">
           Room {facultyNextClass.room}
         </Text>
       </View>
 
       <View style={styles.metaRow}>
-        <MaterialIcons color={COLORS.white} name="schedule" size={16} />
-        <Text color={COLORS.white} variant="body">
+        <MaterialIcons color={COLORS.accentBlueMuted} name="schedule" size={16} />
+        <Text color={COLORS.accentBlueMuted} variant="body">
           {timeRange}
         </Text>
       </View>

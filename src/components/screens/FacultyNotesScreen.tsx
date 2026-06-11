@@ -1,6 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Alert, Pressable, StyleSheet, View } from "react-native";
+import * as DocumentPicker from "expo-document-picker";
 
 import {
   ActionButton,
@@ -12,26 +13,26 @@ import { Input, Screen, Text } from "@/src/components/ui";
 import {
   facultyNotesInitial,
   noteClasses,
-  noteFileTypes,
   noteSubjects,
   type FacultyNoteMaterial,
   type NoteFileType,
 } from "@/src/data/notesMockData";
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
 
-const mockFiles: Record<NoteFileType, string> = {
-  DOC: "unit-notes.docx",
-  PDF: "normalization.pdf",
-  PPT: "lecture-slides.ppt",
-  Video: "lab-demo.mp4",
-};
+function getFileType(name: string): NoteFileType {
+  const ext = name.split(".").pop()?.toLowerCase() ?? "";
+  if (ext === "pdf") return "PDF";
+  if (ext === "ppt" || ext === "pptx") return "PPT";
+  if (ext === "mp4" || ext === "mov" || ext === "avi") return "Video";
+  return "DOC";
+}
 
 export function FacultyNotesScreen() {
   const [subject, setSubject] = useState(noteSubjects[0]);
   const [className, setClassName] = useState("CSE C");
-  const [fileType, setFileType] = useState<NoteFileType>("PDF");
   const [title, setTitle] = useState("Normalization Notes");
   const [description, setDescription] = useState("Unit 2 Notes");
+  const [pickedFile, setPickedFile] = useState<{ name: string; uri: string } | null>(null);
   const [notes, setNotes] =
     useState<FacultyNoteMaterial[]>(facultyNotesInitial);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -41,7 +42,25 @@ export function FacultyNotesScreen() {
     setEditingId(null);
     setTitle("Normalization Notes");
     setDescription("Unit 2 Notes");
-    setFileType("PDF");
+    setPickedFile(null);
+  };
+
+  const pickDocument = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-powerpoint",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "video/*",
+      ],
+      copyToCacheDirectory: true,
+    });
+
+    if (!result.canceled && result.assets?.[0]) {
+      setPickedFile({ name: result.assets[0].name, uri: result.assets[0].uri });
+    }
   };
 
   const saveNote = () => {
@@ -49,11 +68,14 @@ export function FacultyNotesScreen() {
       return;
     }
 
+    const fileName = pickedFile?.name ?? "untitled-file";
+    const fileType = getFileType(fileName);
+
     const nextNote: FacultyNoteMaterial = {
       className,
       description,
-      facultyName: "Dr. John Doe",
-      fileName: mockFiles[fileType],
+      facultyName: "Mr. Bala",
+      fileName,
       fileType,
       id: editingId ?? `note-local-${Date.now()}`,
       subject,
@@ -67,7 +89,7 @@ export function FacultyNotesScreen() {
         : [nextNote, ...current],
     );
     setSuccessMessage(
-      editingId ? "Notes updated locally" : "Notes uploaded locally",
+      editingId ? "Notes updated." : "Notes uploaded.",
     );
     resetForm();
   };
@@ -78,16 +100,29 @@ export function FacultyNotesScreen() {
     setClassName(note.className);
     setTitle(note.title);
     setDescription(note.description);
-    setFileType(note.fileType);
+    setPickedFile({ name: note.fileName, uri: "" });
     setSuccessMessage("");
   };
 
   const deleteNote = (noteId: string) => {
-    setNotes((current) => current.filter((note) => note.id !== noteId));
-    setSuccessMessage("Notes deleted locally");
-    if (editingId === noteId) {
-      resetForm();
-    }
+    Alert.alert(
+      "Delete Note",
+      "Are you sure you want to delete this note? This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            setNotes((current) => current.filter((note) => note.id !== noteId));
+            setSuccessMessage("Notes deleted.");
+            if (editingId === noteId) {
+              resetForm();
+            }
+          },
+        },
+      ],
+    );
   };
 
   return (
@@ -146,28 +181,27 @@ export function FacultyNotesScreen() {
           value={description}
         />
 
-        <View>
+        <View style={styles.fileSection}>
           <Text color={COLORS.textSecondary} variant="caption">
-            File Type
+            Attachment
           </Text>
-          <View style={dashboardStyles.chipRow}>
-            {noteFileTypes.map((item) => (
-              <Chip
-                key={item}
-                active={item === fileType}
-                label={item}
-                onPress={() => setFileType(item)}
-              />
-            ))}
-          </View>
+          <Pressable onPress={pickDocument} style={styles.filePicker}>
+            <MaterialIcons
+              color={pickedFile ? COLORS.success : COLORS.primary}
+              name={pickedFile ? "check-circle" : "upload-file"}
+              size={22}
+            />
+            <Text
+              color={pickedFile ? COLORS.textPrimary : COLORS.textSecondary}
+              variant="body"
+              numberOfLines={1}
+            >
+              {pickedFile ? pickedFile.name : "Upload PDF, DOC, PPT, or Video"}
+            </Text>
+          </Pressable>
         </View>
 
-        <View style={styles.mockFile}>
-          <MaterialIcons color={COLORS.navy} name="attach-file" size={20} />
-          <Text variant="body">{mockFiles[fileType]}</Text>
-        </View>
-
-        <ActionButton onPress={saveNote} variant="navy">
+        <ActionButton onPress={saveNote} variant="peach">
           {editingId ? "Save Changes" : "Upload Notes"}
         </ActionButton>
         {editingId ? (
@@ -259,6 +293,7 @@ function Chip({
 
 const styles = StyleSheet.create({
   actionRow: {
+    alignItems: "center",
     flexDirection: "row",
     flexWrap: "wrap",
     gap: SPACING.md,
@@ -274,13 +309,19 @@ const styles = StyleSheet.create({
   header: {
     gap: SPACING.xs,
   },
-  mockFile: {
+  filePicker: {
     alignItems: "center",
-    backgroundColor: COLORS.accentBlue,
-    borderRadius: RADIUS.lg,
+    borderColor: COLORS.border,
+    borderRadius: RADIUS.md,
+    borderStyle: "dashed",
+    borderWidth: 1.5,
     flexDirection: "row",
     gap: SPACING.sm,
-    padding: SPACING.md,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.md,
+  },
+  fileSection: {
+    gap: SPACING.xs,
   },
   noteCard: {
     backgroundColor: COLORS.accentBlue,
