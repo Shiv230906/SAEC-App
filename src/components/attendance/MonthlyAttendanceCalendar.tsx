@@ -16,7 +16,6 @@ type MonthlyAttendanceCalendarProps = {
 };
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const TOTAL_COLS = 7;
 
 export function MonthlyAttendanceCalendar({
   days,
@@ -42,20 +41,25 @@ export function MonthlyAttendanceCalendar({
     calendarCells.push(found ?? { date: d, status: null });
   }
 
-  const remainder = calendarCells.length % TOTAL_COLS;
+  const remainder = calendarCells.length % 7;
   if (remainder > 0) {
-    for (let i = 0; i < TOTAL_COLS - remainder; i++) {
+    for (let i = 0; i < 7 - remainder; i++) {
       calendarCells.push(null);
     }
+  }
+
+  const rows: (MonthlyAttendanceDay | null)[][] = [];
+  for (let i = 0; i < calendarCells.length; i += 7) {
+    rows.push(calendarCells.slice(i, i + 7));
   }
 
   return (
     <DashboardCard style={styles.card}>
       <Text variant="innerHeading">{month}</Text>
 
-      <View style={styles.weekdayRow}>
+      <View style={styles.row}>
         {WEEKDAYS.map((wd) => (
-          <View key={wd} style={styles.weekdayCell}>
+          <View key={wd} style={styles.cell}>
             <Text color={COLORS.textSecondary} style={styles.weekdayText} variant="caption">
               {wd}
             </Text>
@@ -63,28 +67,31 @@ export function MonthlyAttendanceCalendar({
         ))}
       </View>
 
-      <View style={styles.grid}>
-        {calendarCells.map((cell, index) => {
-          if (!cell) {
-            return <View key={`empty-${index}`} style={styles.dayCell} />;
-          }
+      {rows.map((row, rowIndex) => (
+        <View key={`row-${rowIndex}`} style={styles.row}>
+          {row.map((cell, colIndex) => {
+            const cellKey = `${rowIndex}-${colIndex}`;
+            if (!cell) {
+              return <View key={cellKey} style={styles.cell} />;
+            }
 
-          const bgColor = cell.status
-            ? getAttendanceStatusColor(cell.status)
-            : COLORS.accentBlue;
-          const textColor = cell.status ? COLORS.white : COLORS.textSecondary;
+            const bgColor = cell.status
+              ? getAttendanceStatusColor(cell.status)
+              : COLORS.accentBlue;
+            const textColor = cell.status ? COLORS.white : COLORS.textSecondary;
 
-          return (
-            <View key={`day-${cell.date}`} style={styles.dayCell}>
-              <View style={[styles.dayCircle, { backgroundColor: bgColor }]}>
-                <Text color={textColor} style={styles.dayText} variant="caption">
-                  {cell.date}
-                </Text>
+            return (
+              <View key={cellKey} style={styles.cell}>
+                <View style={[styles.dayCircle, { backgroundColor: bgColor }]}>
+                  <Text color={textColor} style={styles.dayText} variant="caption">
+                    {cell.date}
+                  </Text>
+                </View>
               </View>
-            </View>
-          );
-        })}
-      </View>
+            );
+          })}
+        </View>
+      ))}
 
       <View style={styles.legendRow}>
         <View style={styles.legendItem}>
@@ -106,13 +113,13 @@ export function MonthlyAttendanceCalendar({
 
 const styles = StyleSheet.create({
   card: {
-    gap: SPACING.md,
+    gap: SPACING.sm,
   },
-  dayCell: {
+  cell: {
     alignItems: "center",
+    flex: 1,
     height: 42,
     justifyContent: "center",
-    width: `${100 / TOTAL_COLS}%` as any,
   },
   dayCircle: {
     alignItems: "center",
@@ -123,11 +130,6 @@ const styles = StyleSheet.create({
   },
   dayText: {
     fontSize: 12,
-  },
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    width: "100%",
   },
   legendDot: {
     borderRadius: RADIUS.pill,
@@ -144,16 +146,13 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: SPACING.md,
     justifyContent: "center",
+    marginTop: SPACING.sm,
   },
-  weekdayCell: {
-    alignItems: "center",
-    width: `${100 / TOTAL_COLS}%` as any,
-  },
-  weekdayRow: {
+  row: {
     flexDirection: "row",
-    width: "100%",
   },
   weekdayText: {
     fontSize: 11,
+    fontWeight: "600",
   },
 });

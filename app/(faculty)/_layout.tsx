@@ -8,8 +8,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AssignmentIcon from "@/src/utils/icons/assignment.svg";
 import AttendanceIcon from "@/src/utils/icons/attendance.svg";
 import DashboardIcon from "@/src/utils/icons/dashboard.svg";
-import EventsIcon from "@/src/utils/icons/events.svg";
 import NotesIcon from "@/src/utils/icons/notes.svg";
+import MarksIcon from "@/src/utils/icons/marks.svg";
 import { COLORS, SPACING, TYPOGRAPHY } from "@/src/theme";
 
 type TabIcon = ComponentType<SvgProps>;
@@ -77,11 +77,11 @@ export default function FacultyLayout() {
         options={tabOptions("Notes", NotesIcon)}
       />
       <Tabs.Screen
-        name="events"
-        options={tabOptions("Events", EventsIcon)}
+        name="tasks"
+        options={tabOptions("Tasks", MarksIcon)}
       />
       <Tabs.Screen
-        name="tasks"
+        name="events"
         options={{ href: null }}
       />
       <Tabs.Screen
@@ -106,6 +106,10 @@ export default function FacultyLayout() {
       />
       <Tabs.Screen
         name="settings"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="account"
         options={{ href: null }}
       />
     </Tabs>

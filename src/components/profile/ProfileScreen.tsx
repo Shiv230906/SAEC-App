@@ -10,6 +10,7 @@ import EventsIcon from "@/src/utils/icons/events.svg";
 import MarksIcon from "@/src/utils/icons/marks.svg";
 import PaymentIcon from "@/src/utils/icons/payment.svg";
 import TimetableIcon from "@/src/utils/icons/timetable.svg";
+import SignOutButton from "@/src/components/SignOutButton";
 import { Card, Screen, Text } from "@/src/components/ui";
 import { useAuth, type UserRole } from "@/src/context/AuthContext";
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
@@ -25,6 +26,7 @@ type MenuItem = {
 
 const menuItemsByRole = {
   admin: [
+    { href: "/(admin)/account", materialIcon: "person" as const, title: "Account" },
     { href: "/(admin)/users", icon: AssignmentIcon, title: "User Management" },
     {
       href: "/(admin)/departments",
@@ -33,8 +35,10 @@ const menuItemsByRole = {
     },
     { href: "/(admin)/reports", icon: MarksIcon, title: "Reports" },
     { href: "/(admin)/payments", icon: PaymentIcon, title: "Payments" },
+    { href: "/(admin)/settings", materialIcon: "settings" as const, title: "Settings" },
   ],
   faculty: [
+    { href: "/(faculty)/account", materialIcon: "person" as const, title: "Account" },
     {
       href: "/(faculty)/attendance",
       icon: AttendanceIcon,
@@ -51,6 +55,7 @@ const menuItemsByRole = {
       title: "Internal Marks Management",
     },
     { href: "/(faculty)/events", icon: EventsIcon, title: "Events" },
+    { href: "/(faculty)/settings", materialIcon: "settings" as const, title: "Settings" },
   ],
   student: [
     { href: "/(student)/payments", icon: PaymentIcon, title: "Payments" },
@@ -61,6 +66,7 @@ const menuItemsByRole = {
       icon: MarksIcon,
       title: "Internal Marks",
     },
+    { href: "/(student)/settings", materialIcon: "settings" as const, title: "Settings" },
   ],
 } satisfies Record<UserRole, MenuItem[]>;
 
@@ -100,13 +106,15 @@ export function ProfileScreen({ role }: ProfileScreenProps) {
       ) : null}
 
       <Card style={styles.menuCard}>
-        <Text variant="innerHeading">Quick Navigation</Text>
+        <Text variant="innerHeading">Profile Menu</Text>
 
         <View style={styles.menuItems}>
           {menuItems.map((item) => (
             <ProfileMenuItem key={item.title} item={item} />
           ))}
         </View>
+
+        <SignOutButton />
       </Card>
     </Screen>
   );
@@ -143,9 +151,6 @@ const styles = StyleSheet.create({
   container: {
     gap: SPACING.lg,
   },
-  summaryCopy: {
-    gap: SPACING.xs,
-  },
   menuCard: {
     gap: SPACING.md,
   },
@@ -180,6 +185,9 @@ const styles = StyleSheet.create({
   summaryCard: {
     backgroundColor: COLORS.primaryLight,
     gap: SPACING.md,
+  },
+  summaryCopy: {
+    gap: SPACING.xs,
   },
 });
 

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
 import { Card, Screen, Text } from "@/src/components/ui";
-import SignOutButton from "@/src/components/SignOutButton";
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
 
 type SettingItem = {
@@ -37,12 +36,6 @@ const initialSettings: SettingItem[] = [
     description: "Switch to a darker theme for low-light environments.",
     enabled: false,
   },
-  {
-    id: "audit-log",
-    title: "Audit Logging",
-    description: "Log all admin actions for compliance and review.",
-    enabled: true,
-  },
 ];
 
 export default function AdminSettings() {
@@ -63,13 +56,14 @@ export default function AdminSettings() {
       style={styles.screen}
     >
       <View style={styles.header}>
-        <Text variant="subHeading">Admin Settings</Text>
+        <Text variant="subHeading">Settings</Text>
         <Text color={COLORS.textSecondary} variant="body">
-          Manage notifications, security, and platform preferences.
+          Manage your notifications and platform preferences.
         </Text>
       </View>
 
       <View style={styles.section}>
+        <Text variant="innerHeading">Preferences</Text>
         {settings.map((setting) => (
           <Card key={setting.id} style={styles.settingCard}>
             <View style={styles.settingRow}>
@@ -101,21 +95,12 @@ export default function AdminSettings() {
         ))}
       </View>
 
-      <Card style={styles.accountCard}>
-        <Text variant="innerHeading">Account</Text>
-        <Text color={COLORS.textSecondary} variant="body">
-          Sign out of your admin account on this device.
-        </Text>
-        <SignOutButton />
-      </Card>
     </Screen>
   );
 }
 
+
 const styles = StyleSheet.create({
-  accountCard: {
-    gap: SPACING.md,
-  },
   container: {
     gap: SPACING.lg,
     paddingBottom: SPACING.xl,

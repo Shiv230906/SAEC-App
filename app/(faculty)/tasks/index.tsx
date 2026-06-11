@@ -67,51 +67,38 @@ const INITIAL_TASKS: TaskRecord[] = [
   },
 ];
 
-const STATUS_CONFIG: Record<TaskStatus, { label: string; icon: keyof typeof MaterialIcons.glyphMap; bg: string; text: string }> = {
-  pending: { label: "Pending", icon: "schedule", bg: "#FEF9C3", text: "#CA8A04" },
-  ongoing: { label: "On Going", icon: "autorenew", bg: "#FFEDD5", text: "#EA580C" },
-  completed: { label: "Completed", icon: "check-circle", bg: "#DCFCE7", text: "#16A34A" },
-};
-
-function getNextStatus(current: TaskStatus): TaskStatus {
-  if (current === "pending") return "ongoing";
-  if (current === "ongoing") return "completed";
-  return "completed";
-}
+const STATUS_OPTIONS: { key: TaskStatus; label: string; bg: string; activeBg: string; text: string; icon: keyof typeof MaterialIcons.glyphMap }[] = [
+  { key: "pending", label: "Pending", bg: "#FFF9E6", activeBg: "#FEF9C3", text: "#CA8A04", icon: "schedule" },
+  { key: "ongoing", label: "Ongoing", bg: "#FFF5EB", activeBg: "#FFEDD5", text: "#EA580C", icon: "autorenew" },
+  { key: "completed", label: "Done", bg: "#F0FDF4", activeBg: "#DCFCE7", text: "#16A34A", icon: "check-circle" },
+];
 
 export default function FacultyTasks() {
   const [tasks, setTasks] = useState(INITIAL_TASKS);
 
-  const updateStatus = (id: string) => {
+  const setStatus = (id: string, status: TaskStatus) => {
     setTasks((prev) =>
-      prev.map((t) =>
-        t.id === id ? { ...t, status: getNextStatus(t.status) } : t
-      )
+      prev.map((t) => (t.id === id ? { ...t, status } : t))
     );
   };
 
   const ongoing = tasks.filter((t) => t.status === "ongoing");
   const pending = tasks.filter((t) => t.status === "pending");
   const completed = tasks.filter((t) => t.status === "completed");
-  const sections = [
-    { title: "On Going", data: ongoing },
-    { title: "Pending", data: pending },
-    { title: "Completed", data: completed },
-  ];
 
   return (
     <Screen scrollable contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <Text style={styles.darkText} variant="subHeading">My Tasks</Text>
         <Text color={COLORS.textSecondary} variant="body">
-          Track and update your assigned tasks.
+          Tasks assigned by the admin. Update status as you progress.
         </Text>
       </View>
 
       <View style={styles.statsRow}>
-        <Card style={[styles.statCard, { backgroundColor: "#FFEDD5" }]}>
+        <Card style={[styles.statCard, { backgroundColor: "#FFEDD5" }]}>  
           <Text color="#EA580C" variant="innerHeading">{ongoing.length}</Text>
-          <Text color="#EA580C" variant="caption">On Going</Text>
+          <Text color="#EA580C" variant="caption">Ongoing</Text>
         </Card>
         <Card style={[styles.statCard, { backgroundColor: "#FEF9C3" }]}>
           <Text color="#CA8A04" variant="innerHeading">{pending.length}</Text>
@@ -123,104 +110,143 @@ export default function FacultyTasks() {
         </Card>
       </View>
 
-      {sections.map((section) =>
-        section.data.length > 0 ? (
-          <View key={section.title} style={styles.section}>
-            <Text variant="innerHeading">{section.title}</Text>
-            {section.data.map((task) => {
-              const cfg = STATUS_CONFIG[task.status];
-              return (
-                <Card
-                  key={task.id}
-                  style={[
-                    styles.taskCard,
-                    task.status === "ongoing"
-                      ? styles.taskOngoing
-                      : task.status === "completed"
-                        ? styles.taskCompleted
-                        : undefined,
-                  ]}
-                >
-                  <View style={styles.taskTop}>
-                    <View style={styles.taskInfo}>
-                      <Text variant="body">{task.title}</Text>
-                      <Text color={COLORS.textSecondary} variant="caption">
-                        {task.description}
-                      </Text>
-                    </View>
-                    <View style={[styles.statusBadge, { backgroundColor: cfg.bg }]}>
-                      <MaterialIcons color={cfg.text} name={cfg.icon} size={14} />
-                      <Text color={cfg.text} variant="caption">{cfg.label}</Text>
-                    </View>
-                  </View>
+      <View style={styles.taskList}>
+        {tasks.map((task) => {
+          const currentCfg = STATUS_OPTIONS.find((s) => s.key === task.status)!;
 
-                  <View style={styles.taskMeta}>
-                    <Text color={COLORS.textSecondary} variant="caption">
-                      Assigned by: {task.assignedBy}
-                    </Text>
-                    <Text color={COLORS.textSecondary} variant="caption">
-                      Due: {task.dueDate}
-                    </Text>
-                  </View>
+          return (
+            <Card key={task.id} style={styles.taskCard}>
+              <View style={styles.taskTop}>
+                <View style={styles.taskInfo}>
+                  <Text variant="body">{task.title}</Text>
+                  <Text color={COLORS.textSecondary} variant="caption">
+                    {task.description}
+                  </Text>
+                </View>
+                <View style={[styles.statusBadge, { backgroundColor: currentCfg.activeBg }]}>
+                  <MaterialIcons color={currentCfg.text} name={currentCfg.icon} size={14} />
+                  <Text color={currentCfg.text} variant="caption">{currentCfg.label}</Text>
+                </View>
+              </View>
 
-                  {task.status !== "completed" ? (
+              <View style={styles.taskMeta}>
+                <Text color={COLORS.textSecondary} variant="caption">
+                  By: {task.assignedBy}
+                </Text>
+                <Text color={COLORS.textSecondary} variant="caption">
+                  Due: {task.dueDate}
+                </Text>
+              </View>
+
+              <View style={styles.buttonRow}>
+                {STATUS_OPTIONS.map((opt) => {
+                  const isActive = task.status === opt.key;
+                  return (
                     <Pressable
+                      key={opt.key}
+                      onPress={() => setStatus(task.id, opt.key)}
                       style={({ pressed }) => [
-                        styles.actionBtn,
-                        { backgroundColor: task.status === "pending" ? "#FFEDD5" : "#DCFCE7" },
+                        styles.statusBtn,
+                        { backgroundColor: isActive ? opt.activeBg : opt.bg },
+                        isActive ? { borderColor: opt.text, borderWidth: 1.5 } : undefined,
                         pressed ? styles.pressed : undefined,
                       ]}
-                      onPress={() => updateStatus(task.id)}
                     >
+                      <MaterialIcons
+                        color={opt.text}
+                        name={opt.icon}
+                        size={16}
+                      />
                       <Text
-                        color={task.status === "pending" ? "#EA580C" : "#16A34A"}
+                        color={opt.text}
                         variant="caption"
-                        style={styles.actionLabel}
+                        style={isActive ? styles.activeBtnLabel : styles.btnLabel}
                       >
-                        {task.status === "pending" ? "Start Task" : "Mark Complete"}
+                        {opt.label}
                       </Text>
                     </Pressable>
-                  ) : null}
-                </Card>
-              );
-            })}
-          </View>
-        ) : null
-      )}
+                  );
+                })}
+              </View>
+            </Card>
+          );
+        })}
+      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { gap: SPACING.lg, paddingBottom: SPACING.xl },
-  header: { gap: SPACING.sm },
-  darkText: { color: "#0F172A" },
-  statsRow: { flexDirection: "row", gap: SPACING.sm },
-  statCard: { flex: 1, alignItems: "center", gap: SPACING.xs, paddingVertical: SPACING.md },
-  section: { gap: SPACING.sm },
-  taskCard: { gap: SPACING.sm },
-  taskOngoing: { borderLeftWidth: 3, borderLeftColor: "#F97316" },
-  taskCompleted: { borderLeftWidth: 3, borderLeftColor: "#16A34A" },
-  taskTop: { flexDirection: "row", gap: SPACING.sm },
-  taskInfo: { flex: 1, gap: 2 },
-  statusBadge: {
+  activeBtnLabel: {
+    fontFamily: FONT_FAMILY.bold,
+  },
+  btnLabel: {
+    fontFamily: FONT_FAMILY.regular,
+  },
+  buttonRow: {
     flexDirection: "row",
+    gap: SPACING.sm,
+  },
+  container: {
+    gap: SPACING.lg,
+    paddingBottom: SPACING.xl,
+  },
+  darkText: {
+    color: "#0F172A",
+  },
+  header: {
+    gap: SPACING.sm,
+  },
+  pressed: {
+    opacity: 0.7,
+  },
+  statCard: {
+    alignItems: "center",
+    flex: 1,
+    gap: SPACING.xs,
+    paddingVertical: SPACING.md,
+  },
+  statsRow: {
+    flexDirection: "row",
+    gap: SPACING.sm,
+  },
+  statusBadge: {
     alignItems: "center",
     alignSelf: "flex-start",
-    gap: 4,
     borderRadius: RADIUS.pill,
+    flexDirection: "row",
+    gap: 4,
     paddingHorizontal: SPACING.sm,
     paddingVertical: 3,
+  },
+  statusBtn: {
+    alignItems: "center",
+    borderColor: "transparent",
+    borderRadius: RADIUS.md,
+    borderWidth: 1.5,
+    flex: 1,
+    flexDirection: "row",
+    gap: 4,
+    justifyContent: "center",
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.sm,
+  },
+  taskCard: {
+    gap: SPACING.sm,
+  },
+  taskInfo: {
+    flex: 1,
+    gap: 2,
+  },
+  taskList: {
+    gap: SPACING.md,
   },
   taskMeta: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  actionBtn: {
-    alignItems: "center",
-    borderRadius: RADIUS.md,
-    paddingVertical: SPACING.sm,
+  taskTop: {
+    flexDirection: "row",
+    gap: SPACING.sm,
   },
-  actionLabel: { fontFamily: FONT_FAMILY.semiBold },
-  pressed: { opacity: 0.7 },
 });

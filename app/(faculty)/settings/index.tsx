@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
 import { Card, Screen, Text } from "@/src/components/ui";
-import SignOutButton from "@/src/components/SignOutButton";
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
 
 type SettingItem = {
@@ -37,12 +36,6 @@ const initialSettings: SettingItem[] = [
     description: "Switch to a darker theme for low-light environments.",
     enabled: false,
   },
-  {
-    id: "attendance-reminder",
-    title: "Attendance Reminders",
-    description: "Get notified before each class to mark attendance.",
-    enabled: true,
-  },
 ];
 
 export default function FacultySettings() {
@@ -65,11 +58,12 @@ export default function FacultySettings() {
       <View style={styles.header}>
         <Text variant="subHeading">Settings</Text>
         <Text color={COLORS.textSecondary} variant="body">
-          Manage notifications, security, and app preferences.
+          Manage your notifications and preferences.
         </Text>
       </View>
 
       <View style={styles.section}>
+        <Text variant="innerHeading">Preferences</Text>
         {settings.map((setting) => (
           <Card key={setting.id} style={styles.settingCard}>
             <View style={styles.settingRow}>
@@ -101,21 +95,12 @@ export default function FacultySettings() {
         ))}
       </View>
 
-      <Card style={styles.accountCard}>
-        <Text variant="innerHeading">Account</Text>
-        <Text color={COLORS.textSecondary} variant="body">
-          Sign out of your faculty account on this device.
-        </Text>
-        <SignOutButton />
-      </Card>
     </Screen>
   );
 }
 
+
 const styles = StyleSheet.create({
-  accountCard: {
-    gap: SPACING.md,
-  },
   container: {
     gap: SPACING.lg,
     paddingBottom: SPACING.xl,
