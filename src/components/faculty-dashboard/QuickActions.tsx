@@ -44,7 +44,7 @@ const actions: QuickAction[] = [
     Icon: null,
     label: "Notice",
     materialIcon: "campaign",
-    route: "/(faculty)/notes",
+    route: "/(faculty)/notices",
   },
   {
     Icon: NotesIcon,

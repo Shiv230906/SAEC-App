@@ -28,20 +28,25 @@ export default function AdminAssignTask() {
       if (dueDate) {
         const parts = dueDate.split("-");
         if (parts.length === 3) {
-          isoDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+          const day = parts[0].padStart(2, "0");
+          const month = parts[1].padStart(2, "0");
+          const year = parts[2];
+          isoDate = `${year}-${month}-${day}`;
         }
       }
 
-      const { error } = await supabase.from("tasks").insert([
-        {
-          title: taskTitle,
-          assignee,
-          due_date: isoDate,
-          priority,
-          description,
-          status: "pending",
-        },
-      ]);
+      const payload: Record<string, unknown> = {
+        title: taskTitle.trim(),
+        assignee: assignee.trim(),
+        priority,
+        description: description.trim() || null,
+        status: "pending",
+      };
+      if (isoDate) {
+        payload.due_date = isoDate;
+      }
+
+      const { error } = await supabase.from("tasks").insert([payload]);
 
       if (error) throw error;
 
@@ -50,8 +55,11 @@ export default function AdminAssignTask() {
       setAssignee("");
       setDueDate("");
       setDescription("");
-    } catch (error) {
-      const msg = error instanceof Error ? error.message : String(error);
+    } catch (error: any) {
+      const msg =
+        error?.response?.data?.message ??
+        error?.message ??
+        (typeof error === "string" ? error : JSON.stringify(error));
       Alert.alert("Error", msg);
     } finally {
       setSubmitting(false);

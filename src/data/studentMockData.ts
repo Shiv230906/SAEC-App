@@ -144,6 +144,15 @@ export const studentWeeklyTimetable: WeeklyTimetableDay[] = [
       { label: "Software Eng", room: "Room 208", time: "01:00 PM" },
     ],
   },
+  {
+    day: "Saturday",
+    entries: [
+      { label: "DBMS Lab", room: "Lab 1", time: "09:00 AM" },
+      { label: "Software Eng", room: "Room 208", time: "10:30 AM" },
+      { label: "Break", time: "12:00 PM", italic: true },
+      { label: "CN Tutorial", room: "Room 112", time: "01:00 PM" },
+    ],
+  },
 ];
 
 export const studentAttendanceSummary = {

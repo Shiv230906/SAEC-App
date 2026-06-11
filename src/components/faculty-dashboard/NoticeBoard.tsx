@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { router } from "expo-router";
 
 import {
   ActionButton,
@@ -33,7 +34,12 @@ export default function NoticeBoard() {
         ))}
       </View>
 
-      <ActionButton variant="navy">Create Notice</ActionButton>
+      <ActionButton
+        onPress={() => router.push("/(faculty)/notices")}
+        variant="navy"
+      >
+        Create Notice
+      </ActionButton>
     </DashboardCard>
   );
 }

@@ -25,18 +25,23 @@ export default function AdminEvents() {
       if (date) {
         const parts = date.split("-");
         if (parts.length === 3) {
-          isoDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+          const day = parts[0].padStart(2, "0");
+          const month = parts[1].padStart(2, "0");
+          const year = parts[2];
+          isoDate = `${year}-${month}-${day}`;
         }
       }
 
-      const { error } = await supabase.from("events").insert([
-        {
-          title,
-          description,
-          event_date: isoDate,
-          venue: venue || null,
-        },
-      ]);
+      const payload: Record<string, unknown> = {
+        title: title.trim(),
+        description: description.trim() || null,
+        venue: venue.trim() || null,
+      };
+      if (isoDate) {
+        payload.event_date = isoDate;
+      }
+
+      const { error } = await supabase.from("events").insert([payload]);
 
       if (error) throw error;
 
@@ -45,8 +50,11 @@ export default function AdminEvents() {
       setDescription("");
       setDate("");
       setVenue("");
-    } catch (error) {
-      const msg = error instanceof Error ? error.message : String(error);
+    } catch (error: any) {
+      const msg =
+        error?.response?.data?.message ??
+        error?.message ??
+        (typeof error === "string" ? error : JSON.stringify(error));
       Alert.alert("Error", msg);
     } finally {
       setSubmitting(false);

@@ -81,6 +81,14 @@ export default function FacultyLayout() {
         options={tabOptions("Events", EventsIcon)}
       />
       <Tabs.Screen
+        name="tasks"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="notices"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
         name="internal-marks"
         options={{ href: null }}
       />

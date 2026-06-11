@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal, Pressable, StyleSheet, View } from "react-native";
+import { Alert, Modal, Pressable, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -28,7 +28,7 @@ export function ProfileHeader({
   showSubtitle = true,
   variant = "default",
 }: ProfileHeaderProps) {
-  const { profile, role, user } = useAuth();
+  const { profile, role, user, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const resolvedRole = roleOverride ?? role ?? "student";
   const fullName = getDisplayName(profile, user);
@@ -46,6 +46,18 @@ export function ProfileHeader({
   function navigateTo(route: string) {
     setMenuOpen(false);
     router.push(route as any);
+  }
+
+  async function handleSignOut() {
+    setMenuOpen(false);
+    try {
+      await signOut();
+      router.replace("/login");
+    } catch (error) {
+      const msg =
+        error instanceof Error ? error.message : String(error);
+      Alert.alert("Sign out failed", msg);
+    }
   }
 
   const profileRoute = getProfileRoute(resolvedRole);
@@ -83,12 +95,6 @@ export function ProfileHeader({
             </Text>
           ) : null}
         </View>
-
-        <MaterialIcons
-          color={isLight ? COLORS.white : COLORS.textSecondary}
-          name={menuOpen ? "keyboard-arrow-up" : "keyboard-arrow-down"}
-          size={20}
-        />
       </Pressable>
 
       <Modal
@@ -119,10 +125,7 @@ export function ProfileHeader({
 
             <Pressable
               style={styles.menuItem}
-              onPress={() => {
-                setMenuOpen(false);
-                router.push(profileRoute);
-              }}
+              onPress={handleSignOut}
             >
               <MaterialIcons color={COLORS.error} name="logout" size={20} />
               <Text color={COLORS.error} variant="body">

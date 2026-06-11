@@ -132,8 +132,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLORS.accentBlue,
     borderRadius: RADIUS.pill,
-    minWidth: 52,
-    paddingHorizontal: SPACING.sm,
+    flex: 1,
+    minWidth: 44,
+    paddingHorizontal: SPACING.xs,
     paddingVertical: SPACING.sm,
   },
   dayTabActive: {
@@ -144,8 +145,7 @@ const styles = StyleSheet.create({
   },
   dayTabs: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: SPACING.sm,
+    gap: SPACING.xs,
   },
   entryCopy: {
     flex: 1,

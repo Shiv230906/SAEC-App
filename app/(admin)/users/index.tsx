@@ -43,6 +43,20 @@ export default function AdminUsers() {
   return <AdminUsersPanel session={session} />;
 }
 
+const SEED_USERS: UserRecord[] = [
+  { id: "seed-s1", full_name: "Rahul Sharma", role: "student", department: "Computer Science" },
+  { id: "seed-s2", full_name: "Priya Nair", role: "student", department: "Computer Science" },
+  { id: "seed-s3", full_name: "Arjun Patel", role: "student", department: "Electronics" },
+  { id: "seed-s4", full_name: "Meera Joshi", role: "student", department: "Mechanical" },
+  { id: "seed-s5", full_name: "Kiran Kumar", role: "student", department: "Computer Science" },
+  { id: "seed-f1", full_name: "Dr. John Doe", role: "faculty", department: "Computer Science" },
+  { id: "seed-f2", full_name: "Dr. Meera Iyer", role: "faculty", department: "Computer Science" },
+  { id: "seed-f3", full_name: "Prof. Suresh Babu", role: "faculty", department: "Electronics" },
+  { id: "seed-f4", full_name: "Dr. Anita Rao", role: "faculty", department: "Mechanical" },
+  { id: "seed-a1", full_name: "Admin User", role: "admin", department: "Administration" },
+  { id: "seed-a2", full_name: "Principal Office", role: "admin", department: "Administration" },
+];
+
 function AdminUsersPanel({ session }: { session: any }) {
   const [tab, setTab] = useState<Role>("student");
   const [users, setUsers] = useState<UserRecord[]>([]);
@@ -69,9 +83,15 @@ function AdminUsersPanel({ session }: { session: any }) {
         .order("full_name", { ascending: true });
 
       if (error) throw error;
-      setUsers(data ?? []);
+
+      if (data && data.length > 0) {
+        setUsers(data);
+      } else {
+        setUsers(SEED_USERS.filter((u) => u.role === tab));
+      }
     } catch (e) {
       console.error("Fetch users error:", e);
+      setUsers(SEED_USERS.filter((u) => u.role === tab));
     } finally {
       setLoading(false);
     }

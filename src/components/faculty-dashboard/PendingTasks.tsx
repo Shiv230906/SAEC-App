@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { router } from "expo-router";
 
 import {
   ActionButton,
@@ -33,7 +34,12 @@ export default function PendingTasks() {
         ))}
       </View>
 
-      <ActionButton variant="peach">View All</ActionButton>
+      <ActionButton
+        onPress={() => router.push("/(faculty)/tasks")}
+        variant="peach"
+      >
+        View All
+      </ActionButton>
     </DashboardCard>
   );
 }

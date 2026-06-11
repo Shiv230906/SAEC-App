@@ -39,16 +39,20 @@ function buildEntries(section: string, marks: Record<string, number>): StudentMa
 
 export function FacultyInternalMarksScreen() {
   const [selectedSubject, setSelectedSubject] = useState(facultyMarksSubjects[0]);
-  const [selectedClass, setSelectedClass] = useState("CSE C");
+  const [selectedClass, setSelectedClass] = useState(
+    () => facultyMarksSubjects[0].classes[0],
+  );
   const [selectedAssessment, setSelectedAssessment] =
     useState<AssessmentType>("Internal Test 1");
   const [step, setStep] = useState<Step>("subject");
+
   const students = useMemo(
     () => getStudentsForSection(selectedClass),
     [selectedClass],
   );
+
   const [marks, setMarks] = useState<Record<string, number>>(() =>
-    buildMarksMap(students),
+    buildMarksMap(getStudentsForSection(selectedClass)),
   );
   const [published, setPublished] = useState(false);
 
@@ -59,10 +63,18 @@ export function FacultyInternalMarksScreen() {
   const analytics = calculateMarksAnalytics(entries);
   const performers = getRankedPerformers(entries);
 
+  const selectSubject = (subject: typeof facultyMarksSubjects[number]) => {
+    setSelectedSubject(subject);
+    const firstClass = subject.classes[0];
+    setSelectedClass(firstClass);
+    setMarks(buildMarksMap(getStudentsForSection(firstClass)));
+    setPublished(false);
+    setStep("marks");
+  };
+
   const selectClass = (className: string) => {
-    const nextStudents = getStudentsForSection(className);
     setSelectedClass(className);
-    setMarks(buildMarksMap(nextStudents));
+    setMarks(buildMarksMap(getStudentsForSection(className)));
     setPublished(false);
     setStep("marks");
   };
@@ -102,11 +114,7 @@ export function FacultyInternalMarksScreen() {
               <Pressable
                 key={subject.subject}
                 accessibilityRole="button"
-                onPress={() => {
-                  setSelectedSubject(subject);
-                  setPublished(false);
-                  setStep("class");
-                }}
+                onPress={() => selectSubject(subject)}
                 style={({ pressed }) => [
                   dashboardStyles.chip,
                   isActive ? dashboardStyles.chipActive : undefined,
@@ -125,38 +133,36 @@ export function FacultyInternalMarksScreen() {
         </View>
       </DashboardCard>
 
-      {step !== "subject" ? (
-        <DashboardCard>
-          <SectionHeader icon="groups" title={`${selectedSubject.subject} Classes`} />
-          <View style={dashboardStyles.chipRow}>
-            {selectedSubject.classes.map((className) => {
-              const isActive = className === selectedClass;
+      <DashboardCard>
+        <SectionHeader icon="groups" title={`${selectedSubject.subject} Classes`} />
+        <View style={dashboardStyles.chipRow}>
+          {selectedSubject.classes.map((className) => {
+            const isActive = className === selectedClass;
 
-              return (
-                <Pressable
-                  key={className}
-                  accessibilityRole="button"
-                  onPress={() => selectClass(className)}
-                  style={({ pressed }) => [
-                    dashboardStyles.chip,
-                    isActive ? dashboardStyles.chipActive : undefined,
-                    pressed ? dashboardStyles.pressed : undefined,
-                  ]}
+            return (
+              <Pressable
+                key={className}
+                accessibilityRole="button"
+                onPress={() => selectClass(className)}
+                style={({ pressed }) => [
+                  dashboardStyles.chip,
+                  isActive ? dashboardStyles.chipActive : undefined,
+                  pressed ? dashboardStyles.pressed : undefined,
+                ]}
+              >
+                <Text
+                  color={isActive ? COLORS.white : COLORS.textSecondary}
+                  variant="caption"
                 >
-                  <Text
-                    color={isActive ? COLORS.white : COLORS.textSecondary}
-                    variant="caption"
-                  >
-                    {className}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </DashboardCard>
-      ) : null}
+                  {className}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </DashboardCard>
 
-      {step === "marks" ? (
+      {step !== "subject" ? (
         <>
           <DashboardCard>
             <SectionHeader icon="fact-check" title="Assessment" />

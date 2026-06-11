@@ -4,15 +4,12 @@ import type { ComponentType } from "react";
 import type { SvgProps } from "react-native-svg";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { ProfileHeader } from "./ProfileHeader";
 import AssignmentIcon from "@/src/utils/icons/assignment.svg";
 import AttendanceIcon from "@/src/utils/icons/attendance.svg";
 import EventsIcon from "@/src/utils/icons/events.svg";
 import MarksIcon from "@/src/utils/icons/marks.svg";
 import PaymentIcon from "@/src/utils/icons/payment.svg";
-import ProfileIcon from "@/src/utils/icons/profile.svg";
 import TimetableIcon from "@/src/utils/icons/timetable.svg";
-import SignOutButton from "@/src/components/SignOutButton";
 import { Card, Screen, Text } from "@/src/components/ui";
 import { useAuth, type UserRole } from "@/src/context/AuthContext";
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
@@ -28,7 +25,7 @@ type MenuItem = {
 
 const menuItemsByRole = {
   admin: [
-    { href: "/(admin)/users", icon: ProfileIcon, title: "User Management" },
+    { href: "/(admin)/users", icon: AssignmentIcon, title: "User Management" },
     {
       href: "/(admin)/departments",
       icon: TimetableIcon,
@@ -36,7 +33,6 @@ const menuItemsByRole = {
     },
     { href: "/(admin)/reports", icon: MarksIcon, title: "Reports" },
     { href: "/(admin)/payments", icon: PaymentIcon, title: "Payments" },
-    { href: "/(admin)/settings", materialIcon: "settings" as const, title: "Settings" },
   ],
   faculty: [
     {
@@ -55,7 +51,6 @@ const menuItemsByRole = {
       title: "Internal Marks Management",
     },
     { href: "/(faculty)/events", icon: EventsIcon, title: "Events" },
-    { href: "/(faculty)/settings", materialIcon: "settings" as const, title: "Settings" },
   ],
   student: [
     { href: "/(student)/payments", icon: PaymentIcon, title: "Payments" },
@@ -66,7 +61,6 @@ const menuItemsByRole = {
       icon: MarksIcon,
       title: "Internal Marks",
     },
-    { href: "/(student)/settings", materialIcon: "settings" as const, title: "Settings" },
   ],
 } satisfies Record<UserRole, MenuItem[]>;
 
@@ -84,10 +78,8 @@ export function ProfileScreen({ role }: ProfileScreenProps) {
 
   return (
     <Screen scrollable contentContainerStyle={styles.container}>
-      <Card style={styles.summaryCard}>
-        <ProfileHeader disabled role={role} />
-
-        {user?.email ? (
+      {user?.email ? (
+        <Card style={styles.summaryCard}>
           <View style={styles.summaryCopy}>
             <Text color={COLORS.textSecondary} variant="caption">
               Email
@@ -96,19 +88,25 @@ export function ProfileScreen({ role }: ProfileScreenProps) {
               {user.email}
             </Text>
           </View>
-        ) : null}
-      </Card>
+          <View style={styles.summaryCopy}>
+            <Text color={COLORS.textSecondary} variant="caption">
+              Role
+            </Text>
+            <Text variant="body">
+              {role.charAt(0).toUpperCase() + role.slice(1)}
+            </Text>
+          </View>
+        </Card>
+      ) : null}
 
       <Card style={styles.menuCard}>
-        <Text variant="innerHeading">Profile Menu</Text>
+        <Text variant="innerHeading">Quick Navigation</Text>
 
         <View style={styles.menuItems}>
           {menuItems.map((item) => (
             <ProfileMenuItem key={item.title} item={item} />
           ))}
         </View>
-
-        <SignOutButton />
       </Card>
     </Screen>
   );

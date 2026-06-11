@@ -115,13 +115,15 @@ export default function FacultyAssignments() {
   return (
     <Screen scrollable contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Text variant="subHeading">Assignments</Text>
-        <Text color={COLORS.textSecondary} variant="body">
+        <Text style={styles.darkText} variant="subHeading">Assignments</Text>
+        <Text style={styles.subtitleText} variant="body">
           Create coursework and attach a PDF for students.
         </Text>
       </View>
 
       <Card style={styles.formCard}>
+        <Text style={styles.darkText} variant="innerHeading">Create Assignment</Text>
+
         <Input
           label="Title"
           onChangeText={setTitle}
@@ -180,6 +182,12 @@ export default function FacultyAssignments() {
 const styles = StyleSheet.create({
   container: {
     gap: SPACING.lg,
+  },
+  darkText: {
+    color: "#0F172A",
+  },
+  subtitleText: {
+    color: "#334155",
   },
   descriptionInput: {
     minHeight: 112,
