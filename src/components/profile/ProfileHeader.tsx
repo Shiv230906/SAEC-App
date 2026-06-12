@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Modal, Pressable, StyleSheet, View } from "react-native";
+import { Modal, Pressable, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -28,7 +28,7 @@ export function ProfileHeader({
   showSubtitle = true,
   variant = "default",
 }: ProfileHeaderProps) {
-  const { profile, role, user, signOut } = useAuth();
+  const { profile, role, user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const resolvedRole = roleOverride ?? role ?? "student";
   const fullName = getDisplayName(profile, user);
@@ -46,18 +46,6 @@ export function ProfileHeader({
   function navigateTo(route: string) {
     setMenuOpen(false);
     router.push(route as any);
-  }
-
-  async function handleSignOut() {
-    setMenuOpen(false);
-    try {
-      await signOut();
-      router.replace("/login");
-    } catch (error) {
-      const msg =
-        error instanceof Error ? error.message : String(error);
-      Alert.alert("Sign out failed", msg);
-    }
   }
 
   const profileRoute = getProfileRoute(resolvedRole);
@@ -120,18 +108,6 @@ export function ProfileHeader({
               <MaterialIcons color={COLORS.primary} name="settings" size={20} />
               <Text variant="body">Settings</Text>
             </Pressable>
-
-            <View style={styles.divider} />
-
-            <Pressable
-              style={styles.menuItem}
-              onPress={handleSignOut}
-            >
-              <MaterialIcons color={COLORS.error} name="logout" size={20} />
-              <Text color={COLORS.error} variant="body">
-                Sign Out
-              </Text>
-            </Pressable>
           </View>
         </Pressable>
       </Modal>
@@ -150,11 +126,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexShrink: 1,
     minWidth: 0,
-  },
-  divider: {
-    backgroundColor: COLORS.border,
-    height: 1,
-    marginVertical: SPACING.xs,
   },
   dropdown: {
     backgroundColor: COLORS.white,

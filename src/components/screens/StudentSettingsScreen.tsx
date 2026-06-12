@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
 import { Card, Screen, Text } from "@/src/components/ui";
-import SignOutButton from "@/src/components/SignOutButton";
 import { studentSettings } from "@/src/data/studentMockData";
 import { COLORS, FONT_FAMILY, RADIUS, SPACING } from "@/src/theme";
 
@@ -61,22 +60,11 @@ export function StudentSettingsScreen() {
           </Card>
         ))}
       </View>
-
-      <Card style={styles.accountCard}>
-        <Text variant="innerHeading">Account</Text>
-        <Text color={COLORS.textSecondary} variant="body">
-          Sign out of your student account on this device.
-        </Text>
-        <SignOutButton />
-      </Card>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  accountCard: {
-    gap: SPACING.md,
-  },
   container: {
     gap: SPACING.lg,
     paddingBottom: SPACING.xl,
